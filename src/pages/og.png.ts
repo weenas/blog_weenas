@@ -1,31 +1,18 @@
 import type { APIRoute } from "astro";
 import satori from "satori";
 import sharp from "sharp";
-import { fontData, experimental_getFontFileURL } from "astro:assets";
-import { getFontPathByWeight } from "@/utils/getFontPathByWeight";
 import { loadGoogleFont } from "@/utils/loadGoogleFont";
 import { ogLogoDataUri } from "@/utils/ogLogo";
 import config from "@/config";
 
-export const GET: APIRoute = async context => {
-  const fonts = fontData["--font-google-sans-code"];
-  const regularFontPath = getFontPathByWeight(fonts, 400);
-  const boldFontPath = getFontPathByWeight(fonts, 700);
-
-  if (regularFontPath === undefined || boldFontPath === undefined) {
-    throw new Error("Cannot find the font path.");
-  }
-
+export const GET: APIRoute = async () => {
   const ogText = `${config.site.title}${config.site.description}${new URL(config.site.url).hostname}`;
 
   const [regularData, boldData, cjkRegularData, cjkBoldData] =
     await Promise.all([
-      fetch(experimental_getFontFileURL(regularFontPath, context.url)).then(
-        res => res.arrayBuffer()
-      ),
-      fetch(experimental_getFontFileURL(boldFontPath, context.url)).then(res =>
-        res.arrayBuffer()
-      ),
+      // Satori needs ttf/otf, so fetch subsets instead of the site's woff2.
+      loadGoogleFont("Google Sans Code", 400, ogText),
+      loadGoogleFont("Google Sans Code", 700, ogText),
       loadGoogleFont("Noto Sans SC", 400, ogText),
       loadGoogleFont("Noto Sans SC", 700, ogText),
     ]);
