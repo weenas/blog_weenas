@@ -1,6 +1,13 @@
 import type { UIStrings } from "../types";
 
 export default {
+  site: {
+    description: "Eason 的技术笔记：网络、工具、嵌入式开发与生活记录。",
+  },
+  languages: {
+    en: "英文",
+    zh: "中文",
+  },
   nav: {
     home: "首页",
     posts: "文章",
@@ -21,6 +28,7 @@ export default {
     editPage: "编辑页面",
     previousPost: "上一篇",
     nextPost: "下一篇",
+    translationUnavailable: "本文暂无{{target}}版本，以下为{{source}}原文。",
   },
   pagination: {
     prev: "上一页",
@@ -58,6 +66,7 @@ export default {
     openMenu: "打开菜单",
     closeMenu: "关闭菜单",
     toggleTheme: "切换主题",
+    switchLanguage: "切换语言",
     searchPlaceholder: "搜索文章……",
     noResults: "没有找到结果",
     goToPreviousPage: "上一页",

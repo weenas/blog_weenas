@@ -14,52 +14,53 @@ import ShareLinks from "./_components/ShareLinks.astro";
 import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
+import { tplStr, useTranslations } from "@/i18n";
+import { LOCALE_META, toLocale } from "@/i18n/locales";
+import {
+  getPostLang,
+  localizePost,
+  localizePosts,
+  localizePostsForPaths,
+} from "@/utils/postLocale";
 import config from "@/config";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
-  const sortedPosts = getSortedPosts(posts);
 
-  return sortedPosts.map((post, index) => ({
+  // One path per post; translations share it and are resolved per locale below.
+  return getSortedPosts(localizePostsForPaths(posts)).map(post => ({
     params: { slug: getPostSlug(post.id, post.filePath) },
-    props: {
-      post,
-      // sortedPosts is newest-first, so "older" (prev) is a higher index
-      // and "newer" (next) is a lower index.
-      prevPost:
-        index < sortedPosts.length - 1
-          ? {
-              id: sortedPosts[index + 1].id,
-              title: sortedPosts[index + 1].data.title,
-              filePath: sortedPosts[index + 1].filePath,
-            }
-          : null,
-      nextPost:
-        index > 0
-          ? {
-              id: sortedPosts[index - 1].id,
-              title: sortedPosts[index - 1].data.title,
-              filePath: sortedPosts[index - 1].filePath,
-            }
-          : null,
-    },
+    props: { post },
   }));
 }
 
-type AdjacentPost = {
-  id: string;
-  title: string;
-  filePath: string | undefined;
-} | null;
-
 type Props = {
   post: CollectionEntry<"posts">;
-  prevPost: AdjacentPost;
-  nextPost: AdjacentPost;
 };
 
-const { post, prevPost, nextPost } = Astro.props;
-const locale = Astro.currentLocale ?? config.site.lang;
+const locale = toLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+
+const allPosts = await getCollection("posts");
+const post = localizePost(Astro.props.post, allPosts, locale);
+const postLang = getPostLang(post);
+
+// sortedPosts is newest-first, so "older" (prev) is a higher index
+// and "newer" (next) is a lower index.
+const sortedPosts = getSortedPosts(localizePosts(allPosts, locale));
+const postIndex = sortedPosts.findIndex(({ id }) => id === post.id);
+const toAdjacentPost = (adjacent?: CollectionEntry<"posts">) =>
+  adjacent
+    ? {
+        id: adjacent.id,
+        title: adjacent.data.title,
+        filePath: adjacent.filePath,
+      }
+    : null;
+const prevPost =
+  postIndex >= 0 ? toAdjacentPost(sortedPosts[postIndex + 1]) : null;
+const nextPost =
+  postIndex > 0 ? toAdjacentPost(sortedPosts[postIndex - 1]) : null;
 
 const {
   title,
@@ -134,8 +135,23 @@ const ogImage = ogImageUrl
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
 
+    {
+      postLang !== locale && (
+        <p
+          data-pagefind-ignore
+          class="border-border text-muted-foreground mt-6 border-s-4 ps-3 text-sm"
+        >
+          {tplStr(t.post.translationUnavailable, {
+            target: t.languages[locale],
+            source: t.languages[postLang],
+          })}
+        </p>
+      )
+    }
+
     <article
       id="article"
+      lang={LOCALE_META[postLang].htmlLang}
       class:list={[
         "mt-8 w-full",
         "app-prose max-w-app",

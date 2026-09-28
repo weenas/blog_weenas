@@ -12,10 +12,14 @@ import { getUniqueTags } from "@/utils/getUniqueTags";
 import { getSortedPosts } from "@/utils/getSortedPosts";
 import { slugifyAll } from "@/utils/slugify";
 import { useTranslations } from "@/i18n";
+import { toLocale } from "@/i18n/locales";
+import { localizePost, localizePostsForPaths } from "@/utils/postLocale";
 import config from "@/config";
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const posts = localizePostsForPaths(
+    await getCollection("posts", ({ data }) => !data.draft)
+  );
   const tags = getUniqueTags(posts);
 
   return tags.flatMap(({ tag, tagName }) => {
@@ -33,7 +37,9 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 
 const { page, tagName } = Astro.props;
 
-const locale = Astro.currentLocale ?? config.site.lang;
+const locale = toLocale(Astro.currentLocale);
+const allPosts = await getCollection("posts");
+const pagePosts = page.data.map(post => localizePost(post, allPosts, locale));
 const t = useTranslations(locale);
 ---
 
@@ -47,7 +53,7 @@ const t = useTranslations(locale);
     pageDesc={`${t.pages.tagDesc} "${tagName}".`}
   >
     <ul>
-      {page.data.map(data => <Card {...data} />)}
+      {pagePosts.map(data => <Card {...data} />)}
     </ul>
   </Main>
 

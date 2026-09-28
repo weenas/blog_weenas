@@ -10,6 +10,7 @@ import IconX from "@/assets/icons/IconX.svg";
 import LinkButton from "./LinkButton.astro";
 import { stripBase, stripLocale } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
+import { LOCALES, LOCALE_META } from "@/i18n/locales";
 import config from "@/config";
 
 const { site, features } = config;
@@ -26,6 +27,13 @@ const pathWithoutTrailingSlash =
     : relativePath;
 
 const currentPath = stripLocale(pathWithoutTrailingSlash, locale);
+
+// Links to the current page in each other language.
+const otherLocales = LOCALES.filter(alt => alt !== locale).map(alt => ({
+  locale: alt,
+  label: LOCALE_META[alt].label,
+  href: getRelativeLocaleUrl(alt, currentPath.replace(/^\//, "")),
+}));
 
 const isActive = (path: string) => {
   const currentPathArray = currentPath.split("/").filter(p => p.trim());
@@ -72,9 +80,9 @@ const isActive = (path: string) => {
       </button>
       <ul
         id="menu-items"
-        class="[&>li>a]:hover:text-accent mt-4 hidden w-44 grid-cols-2 place-content-center gap-2 sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0 sm:[&>li]:h-8 [&>li>a]:block [&>li>a]:px-4 [&>li>a]:py-3 [&>li>a]:text-center [&>li>a]:font-medium sm:[&>li>a]:px-2 sm:[&>li>a]:py-1"
+        class="[&>li>a]:hover:text-accent mt-4 hidden w-48 grid-cols-3 place-content-center gap-2 sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0 sm:[&>li]:h-8 [&>li>a]:block [&>li>a]:px-4 [&>li>a]:py-3 [&>li>a]:text-center [&>li>a]:font-medium sm:[&>li>a]:px-2 sm:[&>li>a]:py-1"
       >
-        <li class="col-span-2">
+        <li class="col-span-3">
           <a
             href={getRelativeLocaleUrl(locale, "posts")}
             class:list={{ "active-nav": isActive("/posts") }}
@@ -82,7 +90,7 @@ const isActive = (path: string) => {
             {t.nav.posts}
           </a>
         </li>
-        <li class="col-span-2">
+        <li class="col-span-3">
           <a
             href={getRelativeLocaleUrl(locale, "tags")}
             class:list={{ "active-nav": isActive("/tags") }}
@@ -90,7 +98,7 @@ const isActive = (path: string) => {
             {t.nav.tags}
           </a>
         </li>
-        <li class="col-span-2">
+        <li class="col-span-3">
           <a
             href={getRelativeLocaleUrl(locale, "about")}
             class:list={{ "active-nav": isActive("/about") }}
@@ -100,7 +108,7 @@ const isActive = (path: string) => {
         </li>
         {
           features.showArchives && (
-            <li class="col-span-2">
+            <li class="col-span-3">
               <LinkButton
                 href={getRelativeLocaleUrl(locale, "archives")}
                 class:list={[
@@ -142,6 +150,23 @@ const isActive = (path: string) => {
               </LinkButton>
             </li>
           )
+        }
+        {
+          otherLocales.map(alt => (
+            <li class="col-span-1 flex items-center justify-center">
+              <a
+                href={alt.href}
+                hreflang={LOCALE_META[alt.locale].htmlLang}
+                lang={LOCALE_META[alt.locale].htmlLang}
+                title={t.a11y.switchLanguage}
+                aria-label={`${t.a11y.switchLanguage}: ${alt.label}`}
+                data-astro-reload
+                class="focus-outline hover:text-accent px-2 py-1 text-sm font-medium whitespace-nowrap"
+              >
+                {alt.label}
+              </a>
+            </li>
+          ))
         }
         {
           features.lightAndDarkMode && (

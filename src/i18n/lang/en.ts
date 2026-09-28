@@ -1,6 +1,14 @@
 import type { UIStrings } from "../types";
 
 export default {
+  site: {
+    description:
+      "Eason's notes on networking, tools, embedded development and life.",
+  },
+  languages: {
+    en: "English",
+    zh: "Chinese",
+  },
   nav: {
     home: "Home",
     posts: "Posts",
@@ -21,6 +29,8 @@ export default {
     editPage: "Edit page",
     previousPost: "Previous Post",
     nextPost: "Next Post",
+    translationUnavailable:
+      "This post is not available in {{target}} yet. Showing the original {{source}} version.",
   },
   pagination: {
     prev: "Prev",
@@ -58,6 +68,7 @@ export default {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     toggleTheme: "Toggle theme",
+    switchLanguage: "Switch language",
     searchPlaceholder: "Search posts...",
     noResults: "No results found",
     goToPreviousPage: "Go to previous page",

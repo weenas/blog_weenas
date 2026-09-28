@@ -1,4 +1,11 @@
 export interface UIStrings {
+  site: {
+    description: string;
+  };
+  languages: {
+    en: string;
+    zh: string;
+  };
   nav: {
     home: string;
     posts: string;
@@ -19,6 +26,8 @@ export interface UIStrings {
     editPage: string;
     previousPost: string;
     nextPost: string;
+    /** Shown when a post has no version in the current language. */
+    translationUnavailable: string;
   };
   pagination: {
     prev: string;
@@ -56,6 +65,7 @@ export interface UIStrings {
     openMenu: string;
     closeMenu: string;
     toggleTheme: string;
+    switchLanguage: string;
     searchPlaceholder: string;
     noResults: string;
     goToPreviousPage: string;

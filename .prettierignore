@@ -15,3 +15,5 @@
 
 # Ignore MDX files
 *.mdx
+# Posts and pages are written in Obsidian; keep their formatting as-is.
+src/content/**/*.md

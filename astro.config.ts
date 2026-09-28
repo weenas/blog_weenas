@@ -18,6 +18,7 @@ import {
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import config from "./astro-paper.config";
+import { DEFAULT_LOCALE, LOCALES, LOCALE_META } from "./src/i18n/locales";
 
 export default defineConfig({
   site: config.site.url,
@@ -26,13 +27,23 @@ export default defineConfig({
     sitemap({
       filter: page =>
         config.features?.showArchives !== false || !page.endsWith("/archives/"),
+      i18n: {
+        defaultLocale: DEFAULT_LOCALE,
+        locales: Object.fromEntries(
+          LOCALES.map(locale => [locale, LOCALE_META[locale].htmlLang])
+        ),
+      },
     }),
   ],
   i18n: {
-    locales: ["zh-CN"],
-    defaultLocale: "zh-CN",
+    locales: [...LOCALES],
+    defaultLocale: DEFAULT_LOCALE,
+    // Every page is written once; `/zh/*` is rendered from the same route
+    // with `Astro.currentLocale === "zh"`.
+    fallback: { zh: DEFAULT_LOCALE },
     routing: {
       prefixDefaultLocale: false,
+      fallbackType: "rewrite",
     },
   },
   markdown: {
