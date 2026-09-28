@@ -10,7 +10,7 @@ import sitemap from "@astrojs/sitemap";
 import { rehypeHeadingIds, unified } from "@astrojs/markdown-remark";
 import rehypeCallouts from "rehype-callouts";
 import rehypeExternalLinks from "rehype-external-links";
-import rehypeLazyImages from "./src/utils/rehype/lazyImages";
+import rehypeLazyImages, { IMAGE_DOMAINS } from "./src/utils/rehype/lazyImages";
 import { headingLinks } from "./src/utils/rehype/headingLinks";
 import {
   transformerNotationDiff,
@@ -75,6 +75,13 @@ export default defineConfig({
         transformerNotationDiff({ matchAlgorithm: "v3" }),
       ],
     },
+  },
+  image: {
+    // Post images live on the photo host; let Astro fetch and optimize them
+    // (webp, srcset, width/height) at build time.
+    domains: IMAGE_DOMAINS,
+    layout: "constrained",
+    responsiveStyles: true,
   },
   // Load pages on hover so navigation feels instant (works with ClientRouter).
   prefetch: {
