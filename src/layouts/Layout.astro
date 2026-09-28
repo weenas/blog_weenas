@@ -3,7 +3,9 @@ import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
-import { getAssetPath } from "@/utils/withBase";
+import { getAssetPath, stripBase, stripLocale } from "@/utils/withBase";
+import { useTranslations } from "@/i18n";
+import { LOCALES, LOCALE_META, toLocale } from "@/i18n/locales";
 import config from "@/config";
 import "@/styles/global.css";
 
@@ -16,24 +18,34 @@ type Props = {
 
 const { site } = config;
 
+const locale = toLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+
 const {
   title = site.title,
-  description = site.description,
+  description = t.site.description,
   ogImage = resolveDefaultOgImagePath(config),
   canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.site ?? Astro.url);
-const rssHref = getRelativeLocaleUrl(
-  Astro.currentLocale ?? config.site.lang,
-  "rss.xml"
+const rssHref = getRelativeLocaleUrl(locale, "rss.xml");
+
+// Same page in every language, for <link rel="alternate" hreflang>.
+const pagePath = stripLocale(stripBase(Astro.url.pathname), locale).replace(
+  /^\//,
+  ""
 );
+const alternates = LOCALES.map(alt => ({
+  hreflang: LOCALE_META[alt].htmlLang,
+  href: new URL(getRelativeLocaleUrl(alt, pagePath), Astro.site).href,
+}));
 ---
 
 <!doctype html>
 <html
   dir={site.dir ?? "ltr"}
-  lang={Astro.currentLocale ?? site.lang}
+  lang={LOCALE_META[locale].htmlLang}
   class="overflow-y-scroll scroll-smooth"
 >
   <head>
@@ -42,6 +54,11 @@ const rssHref = getRelativeLocaleUrl(
     <link rel="icon" type="image/svg+xml" href={getAssetPath("favicon.svg")} />
     <link rel="icon" href={getAssetPath("favicon.ico")} />
     <link rel="canonical" href={canonicalURL} />
+    {
+      alternates.map(({ hreflang, href }) => (
+        <link rel="alternate" {hreflang} {href} />
+      ))
+    }
     <meta name="generator" content={Astro.generator} />
 
     <!-- Font -->

@@ -6,6 +6,7 @@ import sharp from "sharp";
 import { getFontPathByWeight } from "@/utils/getFontPathByWeight";
 import { loadGoogleFont } from "@/utils/loadGoogleFont";
 import { getPostSlug } from "@/utils/getPostPaths";
+import { localizePostsForPaths } from "@/utils/postLocale";
 import config from "@/config";
 
 export async function getStaticPaths() {
@@ -13,8 +14,9 @@ export async function getStaticPaths() {
     return [];
   }
 
+  // One image per post (translations share a URL); uses the default-locale version.
   const posts = await getCollection("posts").then(p =>
-    p.filter(({ data }) => !data.draft && !data.ogImage)
+    localizePostsForPaths(p).filter(({ data }) => !data.ogImage)
   );
 
   return posts.map(post => ({

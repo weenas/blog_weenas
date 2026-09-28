@@ -10,16 +10,22 @@ import Footer from "@/components/Footer.astro";
 import Pagination from "@/components/Pagination.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
 import { useTranslations } from "@/i18n";
+import { toLocale } from "@/i18n/locales";
+import { localizePost, localizePostsForPaths } from "@/utils/postLocale";
 import config from "@/config";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
-  return paginate(getSortedPosts(posts), { pageSize: config.posts.perPage });
+  return paginate(getSortedPosts(localizePostsForPaths(posts)), {
+    pageSize: config.posts.perPage,
+  });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
 
-const locale = Astro.currentLocale ?? config.site.lang;
+const locale = toLocale(Astro.currentLocale);
+const allPosts = await getCollection("posts");
+const pagePosts = page.data.map(post => localizePost(post, allPosts, locale));
 const t = useTranslations(locale);
 ---
 
@@ -30,7 +36,7 @@ const t = useTranslations(locale);
 
   <Main pageTitle={t.pages.postsTitle} pageDesc={t.pages.postsDesc}>
     <ul>
-      {page.data.map(data => <Card {...data} />)}
+      {pagePosts.map(data => <Card {...data} />)}
     </ul>
   </Main>
 

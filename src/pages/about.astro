@@ -1,13 +1,19 @@
 ---
-import { getEntry, render } from "astro:content";
+import { getCollection, render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
+import { toLocale } from "@/i18n/locales";
 import config from "@/config";
 
-const about = await getEntry("pages", "about");
+// `about.zh.md` / `about.en.md` override `about.md` for that language.
+const locale = toLocale(Astro.currentLocale);
+const pages = await getCollection("pages");
+const about =
+  pages.find(({ id }) => id === `about.${locale}`) ??
+  pages.find(({ id }) => id === "about");
 
 if (!about) {
   throw new Error(

@@ -1,6 +1,7 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { BLOG_PATH } from "@/content.config";
 import { slugifyStr } from "./slugify";
+import { LANG_SUFFIX_RE } from "@/i18n/locales";
 import config from "@/config";
 
 function getPostPathSegments(filePath: string | undefined): string[] {
@@ -17,7 +18,9 @@ function getPostPathSegments(filePath: string | undefined): string[] {
 
 function getIdSlug(id: string): string {
   const postId = id.split("/");
-  return postId.length > 0 ? String(postId[postId.length - 1]) : id;
+  const slug = postId.length > 0 ? String(postId[postId.length - 1]) : id;
+  // Translations (`foo.en`) share the URL of the original post.
+  return slug.replace(LANG_SUFFIX_RE, "");
 }
 
 function getPostSlugPath(id: string, filePath: string | undefined): string {

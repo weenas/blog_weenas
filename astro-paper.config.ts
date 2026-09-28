@@ -4,11 +4,11 @@ export default defineAstroPaperConfig({
   site: {
     url: "https://blog-astro-92t.pages.dev/",
     title: "Weenas Blog",
-    description: "Eason 的技术笔记：网络、工具、嵌入式开发与生活记录。",
+    description: "Eason's notes on networking, tools, embedded development and life.",
     author: "Eason Xiang",
     profile: "https://github.com/easonxiang",
     ogImage: "default-og.jpg",
-    lang: "zh-CN",
+    lang: "en",
     timezone: "Asia/Shanghai",
     dir: "ltr",
   },
