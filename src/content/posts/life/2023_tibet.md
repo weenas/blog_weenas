@@ -2,7 +2,7 @@
 title: 2023年西藏自驾游
 date: 2024-06-07T15:58:29+08:00
 image: https://photo.weenas.com/een1q3.jpg
-description: none
+description: 2023 年 7 月与朋友自驾西藏的行程记录：山南错那、吉巴门巴穿越、爆胎惊魂与沿途风光。
 tags:
   - travel
   - tibet

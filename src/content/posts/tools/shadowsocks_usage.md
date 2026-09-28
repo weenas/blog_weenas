@@ -4,7 +4,7 @@ date: 2017-12-06 15:56:43
 tags:
   - tools
   - vpn
-description: none
+description: 在 GFW 干扰下，用 Shadowsocks 搭建稳定的科学上网通道，包括服务端安装与各平台客户端配置。
 pubDatetime: 2017-12-06
 ---
 

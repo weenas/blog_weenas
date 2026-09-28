@@ -2,7 +2,7 @@
 title: linode 迁移
 image: https://photo.weenas.com/sUN8UI.jpg
 date: 2017-01-08
-description: none
+description: 把 Linode 主机从加州机房迁移到日本机房的过程与注意事项，迁移后国内访问速度明显提升。
 tags:
   - network
   - linode

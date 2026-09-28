@@ -15,9 +15,10 @@ import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
 import { tplStr, useTranslations } from "@/i18n";
-import { LOCALE_META, toLocale } from "@/i18n/locales";
+import { DEFAULT_LOCALE, LOCALE_META, toLocale } from "@/i18n/locales";
 import {
   getPostLang,
+  getPostLocales,
   localizePost,
   localizePosts,
   localizePostsForPaths,
@@ -85,12 +86,22 @@ if (typeof initOgImage === "string") {
 }
 
 if (!ogImageUrl && config.features.dynamicOgImage) {
-  const postUrl = getPostUrl(post.id, post.filePath, locale).replace(
+  // OG images are only generated at the default-locale path.
+  const postUrl = getPostUrl(post.id, post.filePath, DEFAULT_LOCALE).replace(
     /\/+$/,
     ""
   );
   ogImageUrl = `${postUrl}/index.png`;
 }
+
+// A post shown in a language it isn't written in canonicalizes to a real version.
+const postLocales = getPostLocales(post, allPosts);
+const canonical =
+  canonicalURL ??
+  (postLocales.includes(locale)
+    ? undefined
+    : new URL(getPostUrl(post.id, post.filePath, postLocales[0]), Astro.site)
+        .href);
 
 const ogImage = ogImageUrl
   ? new URL(ogImageUrl, Astro.url.origin).href
@@ -99,11 +110,15 @@ const ogImage = ogImageUrl
 
 <PostLayout
   title={`${title} | ${config.site.title}`}
+  headline={title}
   description={description}
   ogImage={ogImage}
-  canonicalURL={canonicalURL}
+  canonicalURL={canonical}
   pubDatetime={pubDatetime}
   modDatetime={modDatetime}
+  tags={tags}
+  inLanguage={LOCALE_META[postLang].htmlLang}
+  locales={postLocales}
 >
   <Header />
 

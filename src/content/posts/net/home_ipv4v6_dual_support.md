@@ -5,7 +5,7 @@ image: https://photo.weenas.com/cT0W3h.png
 tags:
   - network
 keywords:
-description: none
+description: 家庭宽带没有公网 IPv4 时，借助 VPS、Socat 和 FRP 实现 IPv4/IPv6 双栈访问家庭网络。
 pubDatetime: 2025-11-24
 ---
 ## Table of contents
@@ -17,7 +17,7 @@ pubDatetime: 2025-11-24
 - 家庭网络需要使用DDNS绑定域名，不管是几级域名都没有问题，用于解决家庭网络IPv6地址会变化的问题，我们这里假设绑定的域名为：`home.xxxx.com`
 - 有一台公网服务器（比如VPS虚拟主机），一般都拥有固定IP地址，用于作为跳板转发IPv4数据
 
-继续读本文前可以先了解下我的[家庭网络结构]({{< ref "home_network.md" >}})，方便理解家庭网关等名词。
+继续读本文前可以先了解下我的[家庭网络结构](../home_network/)，方便理解家庭网关等名词。
 
 ## DNS解析配置
 
