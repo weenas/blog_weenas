@@ -5,6 +5,7 @@ import satori from "satori";
 import sharp from "sharp";
 import { getFontPathByWeight } from "@/utils/getFontPathByWeight";
 import { loadGoogleFont } from "@/utils/loadGoogleFont";
+import { ogLogoDataUri } from "@/utils/ogLogo";
 import { getPostSlug } from "@/utils/getPostPaths";
 import { localizePostsForPaths } from "@/utils/postLocale";
 import config from "@/config";
@@ -160,8 +161,24 @@ export const GET: APIRoute = async ({ props, url }) => {
                           {
                             type: "span",
                             props: {
-                              style: { overflow: "hidden", fontWeight: "bold" },
-                              children: config.site.title,
+                              style: {
+                                display: "flex",
+                                alignItems: "center",
+                                overflow: "hidden",
+                                fontWeight: "bold",
+                              },
+                              children: [
+                                {
+                                  type: "img",
+                                  props: {
+                                    src: ogLogoDataUri,
+                                    width: 48,
+                                    height: 40,
+                                    style: { marginRight: 12 },
+                                  },
+                                },
+                                config.site.title,
+                              ],
                             },
                           },
                         ],
