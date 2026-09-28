@@ -1,0 +1,7 @@
+# Cloudflare Pages redirects: https://developers.cloudflare.com/pages/configuration/redirects/
+
+# linode_usage used to have `slug: 8db64a10`
+/posts/net/8db64a10/     /posts/net/linode_usage/      301
+/posts/net/8db64a10      /posts/net/linode_usage/      301
+/zh/posts/net/8db64a10/  /zh/posts/net/linode_usage/   301
+/zh/posts/net/8db64a10   /zh/posts/net/linode_usage/   301
