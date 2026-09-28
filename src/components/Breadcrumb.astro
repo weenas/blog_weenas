@@ -9,7 +9,7 @@ const t = useTranslations(locale);
 
 // Strip base prefix and trailing slash, then locale prefix so segments
 // reflect the logical page path only.
-const pathWithoutBase = stripBase(Astro.url.pathname).replace(/\/+$/, "");
+const pathWithoutBase = stripBase(Astro.originPathname).replace(/\/+$/, "");
 const currentUrlPath = stripLocale(pathWithoutBase, locale);
 
 // Get url array from path

@@ -11,6 +11,7 @@ import { unified } from "@astrojs/markdown-remark";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import rehypeCallouts from "rehype-callouts";
+import rehypeLazyImages from "./src/utils/rehype/lazyImages";
 import {
   transformerNotationDiff,
   transformerNotationHighlight,
@@ -26,7 +27,10 @@ export default defineConfig({
     mdx(),
     sitemap({
       filter: page =>
-        config.features?.showArchives !== false || !page.endsWith("/archives/"),
+        // noindex pages
+        !/\/search\/$/.test(page) &&
+        (config.features?.showArchives !== false ||
+          !page.endsWith("/archives/")),
       i18n: {
         defaultLocale: DEFAULT_LOCALE,
         locales: Object.fromEntries(
@@ -52,7 +56,7 @@ export default defineConfig({
         remarkToc,
         [remarkCollapse, { test: "Table of contents" }],
       ],
-      rehypePlugins: [rehypeCallouts],
+      rehypePlugins: [rehypeCallouts, rehypeLazyImages],
     }),
     shikiConfig: {
       themes: { light: "min-light", dark: "night-owl" },

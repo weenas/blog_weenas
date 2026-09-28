@@ -10,7 +10,8 @@ const icons = import.meta.glob<{
   default: (_props: Record<string, unknown>) => unknown;
 }>("/src/assets/icons/socials/*.svg");
 
-const pageUrl = Astro.url;
+// originPathname keeps the /zh/ prefix on fallback-rendered pages.
+const pageUrl = new URL(Astro.originPathname, Astro.url);
 
 const platformLabel = (name: string) =>
   name.charAt(0).toUpperCase() + name.slice(1);

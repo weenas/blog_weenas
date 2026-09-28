@@ -1,43 +1,76 @@
 ---
 import Layout from "./Layout.astro";
+import type { Locale } from "@/i18n/locales";
 import config from "@/config";
 
 type Props = {
+  /** Full <title>, e.g. "Post | Site". */
   title?: string;
+  /** Post title alone, used as the structured-data headline. */
+  headline: string;
   description?: string;
   ogImage?: string;
   canonicalURL?: string;
   pubDatetime?: Date;
   modDatetime?: Date | null;
+  tags?: string[];
+  /** BCP 47 language of the post content. */
+  inLanguage?: string;
+  /** Languages the post is available in. */
+  locales?: Locale[];
 };
 
 const { site } = config;
 
-const { title, description, ogImage, canonicalURL, pubDatetime, modDatetime } =
-  Astro.props;
+const {
+  title,
+  headline,
+  description,
+  ogImage,
+  canonicalURL,
+  pubDatetime,
+  modDatetime,
+  tags = [],
+  inLanguage,
+  locales,
+} = Astro.props;
+
+const pageUrl = canonicalURL ?? new URL(Astro.originPathname, Astro.site).href;
+
+const author = {
+  "@type": "Person",
+  name: site.author,
+  ...(site.profile && { url: site.profile }),
+};
 
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: title ?? site.title,
-  image: ogImage,
+  headline,
+  ...(description && { description }),
+  ...(ogImage && { image: ogImage }),
+  url: pageUrl,
+  mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
+  ...(inLanguage && { inLanguage }),
   ...(pubDatetime && { datePublished: pubDatetime.toISOString() }),
-  ...(modDatetime && { dateModified: modDatetime.toISOString() }),
-  author: [
-    {
-      "@type": "Person",
-      name: site.author,
-      ...(site.profile && { url: site.profile }),
-    },
-  ],
+  ...((modDatetime ?? pubDatetime) && {
+    dateModified: (modDatetime ?? pubDatetime)!.toISOString(),
+  }),
+  ...(tags.length > 0 && { keywords: tags.join(", ") }),
+  author: [author],
+  publisher: author,
 };
 ---
 
-<Layout {title} {description} {ogImage} {canonicalURL}>
+<Layout
+  {title}
+  {description}
+  {ogImage}
+  {canonicalURL}
+  {locales}
+  ogType="article"
+>
   <Fragment slot="head">
-    <!-- Override og:type for article pages -->
-    <meta property="og:type" content="article" />
-
     {
       pubDatetime && (
         <meta
@@ -54,6 +87,8 @@ const structuredData = {
         />
       )
     }
+    <meta property="article:author" content={site.author} />
+    {tags.map(tag => <meta property="article:tag" content={tag} />)}
 
     <script
       type="application/ld+json"

@@ -19,7 +19,7 @@ if (config.features.search !== "pagefind" && notFoundUrl) {
 }
 
 const backUrl = config.features.showBackButton
-  ? `${Astro.url.pathname}`
+  ? `${Astro.originPathname}`
   : getRelativeLocaleUrl(locale, "");
 
 const pagefindBundlePath = getAssetPath("pagefind/");
@@ -27,7 +27,7 @@ const pagefindBundlePath = getAssetPath("pagefind/");
 const t = useTranslations(locale);
 ---
 
-<Layout title={`${t.pages.searchTitle} | ${config.site.title}`}>
+<Layout title={`${t.pages.searchTitle} | ${config.site.title}`} noindex>
   <Header />
 
   <Breadcrumb />

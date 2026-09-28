@@ -20,7 +20,7 @@ const t = useTranslations(locale);
 
 // Strip the base prefix so isActive comparisons work regardless of deploy subdirectory.
 // e.g. with base "/blog": "/blog/posts/slug" → "/posts/slug"
-const relativePath = stripBase(Astro.url.pathname);
+const relativePath = stripBase(Astro.originPathname);
 const pathWithoutTrailingSlash =
   relativePath.endsWith("/") && relativePath !== "/"
     ? relativePath.slice(0, -1)

@@ -5,7 +5,13 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
 import { getAssetPath, stripBase, stripLocale } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
-import { LOCALES, LOCALE_META, toLocale } from "@/i18n/locales";
+import {
+  DEFAULT_LOCALE,
+  LOCALES,
+  LOCALE_META,
+  toLocale,
+  type Locale,
+} from "@/i18n/locales";
 import config from "@/config";
 import "@/styles/global.css";
 
@@ -14,6 +20,14 @@ type Props = {
   description?: string;
   ogImage?: string;
   canonicalURL?: string;
+  ogType?: "website" | "article";
+  /** Keep the page out of search results (search page, 404). */
+  noindex?: boolean;
+  /**
+   * Languages this page really exists in (default: all). A page shown in a
+   * language it lacks points its canonical at the first available one.
+   */
+  locales?: Locale[];
 };
 
 const { site } = config;
@@ -25,21 +39,56 @@ const {
   title = site.title,
   description = t.site.description,
   ogImage = resolveDefaultOgImagePath(config),
-  canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
+  canonicalURL: canonicalProp,
+  ogType = "website",
+  noindex = false,
+  locales = [...LOCALES],
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.site ?? Astro.url);
-const rssHref = getRelativeLocaleUrl(locale, "rss.xml");
+// RSS is only generated in the default locale, and it has no trailing slash.
+const rssHref = getAssetPath("rss.xml");
 
 // Same page in every language, for <link rel="alternate" hreflang>.
-const pagePath = stripLocale(stripBase(Astro.url.pathname), locale).replace(
+const pagePath = stripLocale(stripBase(Astro.originPathname), locale).replace(
   /^\//,
   ""
 );
-const alternates = LOCALES.map(alt => ({
+const localeUrl = (l: Locale) =>
+  new URL(getRelativeLocaleUrl(l, pagePath), Astro.site).href;
+
+const alternates = locales.map(alt => ({
   hreflang: LOCALE_META[alt].htmlLang,
-  href: new URL(getRelativeLocaleUrl(alt, pagePath), Astro.site).href,
+  href: localeUrl(alt),
 }));
+const defaultAlternate =
+  alternates.length > 1
+    ? localeUrl(locales.includes(DEFAULT_LOCALE) ? DEFAULT_LOCALE : locales[0])
+    : undefined;
+
+const canonicalURL =
+  canonicalProp ??
+  (locales.includes(locale)
+    ? new URL(Astro.originPathname, Astro.site).href
+    : localeUrl(locales[0]));
+
+const ogLocale = (l: Locale) => LOCALE_META[l].htmlLang.replace("-", "_");
+
+// Site-wide structured data on the home page of each language.
+const isHome = pagePath === "";
+const websiteData = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: site.title,
+  description: t.site.description,
+  url: new URL(getRelativeLocaleUrl(locale, ""), Astro.site).href,
+  inLanguage: LOCALE_META[locale].htmlLang,
+  author: {
+    "@type": "Person",
+    name: site.author,
+    ...(site.profile && { url: site.profile }),
+  },
+};
 ---
 
 <!doctype html>
@@ -52,13 +101,19 @@ const alternates = LOCALES.map(alt => ({
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href={getAssetPath("favicon.svg")} />
-    <link rel="icon" href={getAssetPath("favicon.ico")} />
     <link rel="canonical" href={canonicalURL} />
     {
-      alternates.map(({ hreflang, href }) => (
-        <link rel="alternate" {hreflang} {href} />
-      ))
+      alternates.length > 1 &&
+        alternates.map(({ hreflang, href }) => (
+          <link rel="alternate" {hreflang} {href} />
+        ))
     }
+    {
+      defaultAlternate && (
+        <link rel="alternate" hreflang="x-default" href={defaultAlternate} />
+      )
+    }
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="generator" content={Astro.generator} />
 
     <!-- Font -->
@@ -75,7 +130,13 @@ const alternates = LOCALES.map(alt => ({
     <link rel="sitemap" href={getAssetPath("sitemap-index.xml")} />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content={ogLocale(locale)} />
+    {
+      LOCALES.filter(alt => alt !== locale).map(alt => (
+        <meta property="og:locale:alternate" content={ogLocale(alt)} />
+      ))
+    }
     <meta property="og:site_name" content={site.title} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -83,11 +144,11 @@ const alternates = LOCALES.map(alt => ({
     <meta property="og:image" content={socialImageURL} />
 
     <!-- Twitter / X -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={socialImageURL} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageURL} />
 
     <!-- RSS autodiscovery -->
     <link
@@ -99,6 +160,16 @@ const alternates = LOCALES.map(alt => ({
 
     <!-- Filled at runtime by theme.ts to match the current background colour -->
     <meta name="theme-color" content="" />
+
+    {
+      isHome && (
+        <script
+          type="application/ld+json"
+          is:inline
+          set:html={JSON.stringify(websiteData)}
+        />
+      )
+    }
 
     <!-- Extra head content injected by child layouts (e.g. JSON-LD, article meta) -->
     <slot name="head" />

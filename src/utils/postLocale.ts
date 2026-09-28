@@ -59,6 +59,19 @@ export function localizePost(post: Post, posts: Post[], locale: Locale): Post {
   return versions.length > 0 ? pickVersion(versions, locale) : post;
 }
 
+/** Languages in which `post` has a published version. */
+export function getPostLocales(post: Post, posts: Post[]): Locale[] {
+  const key = getTranslationKey(post);
+  return [
+    ...new Set(
+      posts
+        .filter(postFilter)
+        .filter(p => getTranslationKey(p) === key)
+        .map(getPostLang)
+    ),
+  ];
+}
+
 /** Localized posts for building static paths (same paths for every locale). */
 export function localizePostsForPaths(posts: Post[]): Post[] {
   return localizePosts(posts, DEFAULT_LOCALE);
