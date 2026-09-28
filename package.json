@@ -1,7 +1,8 @@
 {
-  "name": "",
+  "name": "blog-weenas",
+  "private": true,
   "type": "module",
-  "version": "6.1.0",
+  "version": "1.0.0",
   "engines": {
     "node": ">=22.12.0"
   },
