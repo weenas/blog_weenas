@@ -1,0 +1,21 @@
+# Cloudflare Pages headers: https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+
+# Build assets have content hashes in their names, so they never change.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Icons keep their names across changes, so browsers should recheck them daily.
+/favicon*
+  Cache-Control: public, max-age=86400
+/apple-touch-icon.png
+  Cache-Control: public, max-age=86400
+/icon-*
+  Cache-Control: public, max-age=86400
+/site.webmanifest
+  Cache-Control: public, max-age=86400
