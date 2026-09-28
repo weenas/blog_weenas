@@ -29,6 +29,7 @@ export default {
     editPage: "Edit page",
     previousPost: "Previous Post",
     nextPost: "Next Post",
+    onThisPage: "On this page",
     translationUnavailable:
       "This post is not available in {{target}} yet. Showing the original {{source}} version.",
   },

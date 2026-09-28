@@ -17,8 +17,6 @@ pubDatetime: 2025-11-24
 
 继续读本文前可以先了解下我的[家庭网络结构](../home_network/)，方便理解家庭网关等名词。
 
-## Table of contents
-
 ## DNS解析配置
 
 一个域名可以同时配置IPv4的A记录和IPv6的AAAA记录，当用户的上网环境为IPv4时，DNS请求返回A记录，上网环境为IPv6时，DNS请求则返回AAAA记录。假如用户的上网环境同时支持IPv4和IPv6时，由操作系统选择优先使用IPv4或IPv6进行通信，现代操作系统通常优先使用IPv6

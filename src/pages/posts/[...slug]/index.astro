@@ -14,6 +14,7 @@ import ShareLinks from "./_components/ShareLinks.astro";
 import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
+import TableOfContents from "./_components/TableOfContents.astro";
 import { tplStr, useTranslations } from "@/i18n";
 import { DEFAULT_LOCALE, LOCALE_META, toLocale } from "@/i18n/locales";
 import {
@@ -75,7 +76,11 @@ const {
   hideEditPost,
 } = post.data;
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+
+// Only posts with enough structure get a table of contents.
+const tocHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
+const showToc = tocHeadings.length >= 3;
 
 let ogImageUrl: string | undefined;
 
@@ -126,9 +131,25 @@ const ogImage = ogImageUrl
 
   <main
     id="main-content"
-    class:list={["app-layout", { "mt-8": !config.features.showBackButton }]}
+    class:list={[
+      "app-layout relative",
+      { "mt-8": !config.features.showBackButton },
+    ]}
     data-pagefind-body
   >
+    {
+      showToc && (
+        <aside class="absolute inset-s-full top-0 hidden h-full w-56 ps-8 xl:block">
+          <TableOfContents
+            headings={tocHeadings}
+            title={t.post.onThisPage}
+            variant="sidebar"
+            class="sticky top-8 max-h-[calc(100svh-4rem)] overflow-y-auto"
+          />
+        </aside>
+      )
+    }
+
     <h1
       style={{ viewTransitionName: toTransitionName(post.id) }}
       class="text-accent inline-block text-2xl font-bold sm:text-3xl"
@@ -161,6 +182,17 @@ const ogImage = ogImageUrl
             source: t.languages[postLang],
           })}
         </p>
+      )
+    }
+
+    {
+      showToc && (
+        <TableOfContents
+          headings={tocHeadings}
+          title={t.post.onThisPage}
+          variant="inline"
+          class="mt-8 xl:hidden"
+        />
       )
     }
 

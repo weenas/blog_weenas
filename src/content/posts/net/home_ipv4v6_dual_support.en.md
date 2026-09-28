@@ -17,8 +17,6 @@ For this scenario, is there a technical way to achieve dual-stack IPv4/IPv6 acce
 
 Before reading on, you may want to look at my [home network architecture](../home_network/) to understand terms such as the home gateway.
 
-## Table of contents
-
 ## DNS Configuration
 
 A domain can have both an IPv4 A record and an IPv6 AAAA record. When the user is on an IPv4 network, DNS returns the A record; on an IPv6 network, it returns the AAAA record. If the user's network supports both, the operating system decides whether to prefer IPv4 or IPv6, and modern operating systems usually prefer IPv6.
