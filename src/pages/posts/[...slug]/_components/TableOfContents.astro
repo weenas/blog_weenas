@@ -1,0 +1,117 @@
+---
+import type { MarkdownHeading } from "astro";
+
+type Props = {
+  headings: MarkdownHeading[];
+  title: string;
+  /** "sidebar": sticky list beside the article; "inline": collapsible block. */
+  variant: "sidebar" | "inline";
+  class?: string;
+};
+
+const { headings, title, variant, class: className = "" } = Astro.props;
+
+// h2/h3 only; the post title is the page's only h1.
+const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
+const minDepth = Math.min(...items.map(({ depth }) => depth));
+
+const list = items.map(({ depth, slug, text }) => ({
+  slug,
+  text,
+  nested: depth > minDepth,
+}));
+---
+
+{
+  variant === "sidebar" ? (
+    <nav
+      aria-label={title}
+      data-toc
+      data-pagefind-ignore
+      class:list={["text-sm", className]}
+    >
+      <p class="text-foreground mb-3 font-semibold">{title}</p>
+      <ol class="border-border space-y-1.5 border-s">
+        {list.map(({ slug, text, nested }) => (
+          <li>
+            <a
+              href={`#${slug}`}
+              data-toc-link={slug}
+              class:list={[
+                "text-muted-foreground hover:text-accent -ms-px block border-s border-transparent py-0.5 leading-snug",
+                "data-[active]:border-accent data-[active]:text-accent",
+                nested ? "ps-6" : "ps-3",
+              ]}
+            >
+              {text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  ) : (
+    <details
+      data-pagefind-ignore
+      class:list={["border-border rounded border px-4 py-2 text-sm", className]}
+    >
+      <summary class="cursor-pointer font-semibold">{title}</summary>
+      <ol class="mt-2 space-y-1.5">
+        {list.map(({ slug, text, nested }) => (
+          <li class:list={{ "ps-4": nested }}>
+            <a href={`#${slug}`} class="hover:text-accent">
+              {text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  )
+}
+
+<script>
+  let observer: IntersectionObserver | undefined;
+
+  // Highlight the section currently being read: the last heading that has
+  // scrolled above the top ~third of the viewport.
+  function initTocSpy() {
+    observer?.disconnect();
+    const links = new Map(
+      [...document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")].map(
+        link => [link.dataset.tocLink!, link]
+      )
+    );
+    if (links.size === 0) return;
+
+    const headings = [...links.keys()]
+      .map(id => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const setActive = (id: string | undefined) => {
+      links.forEach((link, slug) => {
+        const active = slug === id;
+        link.toggleAttribute("data-active", active);
+        if (active) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
+      });
+    };
+
+    const update = () => {
+      const threshold = window.innerHeight * 0.3;
+      let current: string | undefined;
+      for (const heading of headings) {
+        if (heading.getBoundingClientRect().top <= threshold)
+          current = heading.id;
+        else break;
+      }
+      setActive(current ?? headings[0]?.id);
+    };
+
+    observer = new IntersectionObserver(update, {
+      rootMargin: "0px 0px -70% 0px",
+    });
+    headings.forEach(heading => observer!.observe(heading));
+    update();
+  }
+
+  document.addEventListener("astro:page-load", initTocSpy);
+</script>

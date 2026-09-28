@@ -28,6 +28,7 @@ export default {
     editPage: "编辑页面",
     previousPost: "上一篇",
     nextPost: "下一篇",
+    onThisPage: "本页目录",
     translationUnavailable: "本文暂无{{target}}版本，以下为{{source}}原文。",
   },
   pagination: {

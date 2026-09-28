@@ -26,6 +26,8 @@ export interface UIStrings {
     editPage: string;
     previousPost: string;
     nextPost: string;
+    /** Heading of the table of contents beside a post. */
+    onThisPage: string;
     /** Shown when a post has no version in the current language. */
     translationUnavailable: string;
   };
