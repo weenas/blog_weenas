@@ -4,6 +4,7 @@ import sharp from "sharp";
 import { fontData, experimental_getFontFileURL } from "astro:assets";
 import { getFontPathByWeight } from "@/utils/getFontPathByWeight";
 import { loadGoogleFont } from "@/utils/loadGoogleFont";
+import { ogLogoDataUri } from "@/utils/ogLogo";
 import config from "@/config";
 
 export const GET: APIRoute = async context => {
@@ -101,6 +102,14 @@ export const GET: APIRoute = async context => {
                           textAlign: "center",
                         },
                         children: [
+                          {
+                            type: "img",
+                            props: {
+                              src: ogLogoDataUri,
+                              width: 144,
+                              height: 120,
+                            },
+                          },
                           {
                             type: "p",
                             props: {

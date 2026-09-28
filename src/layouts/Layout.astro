@@ -100,7 +100,26 @@ const websiteData = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href={getAssetPath("favicon.ico")} sizes="any" />
     <link rel="icon" type="image/svg+xml" href={getAssetPath("favicon.svg")} />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href={getAssetPath("favicon-32.png")}
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href={getAssetPath("favicon-16.png")}
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href={getAssetPath("apple-touch-icon.png")}
+    />
+    <link rel="manifest" href={getAssetPath("site.webmanifest")} />
     <link rel="canonical" href={canonicalURL} />
     {
       alternates.length > 1 &&
