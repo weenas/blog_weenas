@@ -250,7 +250,7 @@ q             关闭taglist窗口
 <F1>          显示帮助
 ```
 
-# CScope配置
+## CScope配置
 
 Cscope和Ctags比较类似，都是用于快速查找定位的工具，但Cscope在管理大型项目上更方便，速度也更快。
 

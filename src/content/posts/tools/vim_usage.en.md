@@ -249,7 +249,7 @@ q             close the taglist window
 <F1>          show help
 ```
 
-# Cscope
+## Cscope
 
 Cscope is similar to Ctags — both are tools for quickly finding and navigating code — but Cscope is more convenient and faster for large projects.
 
