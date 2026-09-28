@@ -7,9 +7,11 @@ import {
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
-import { unified } from "@astrojs/markdown-remark";
+import { rehypeHeadingIds, unified } from "@astrojs/markdown-remark";
 import rehypeCallouts from "rehype-callouts";
+import rehypeExternalLinks from "rehype-external-links";
 import rehypeLazyImages from "./src/utils/rehype/lazyImages";
+import { headingLinks } from "./src/utils/rehype/headingLinks";
 import {
   transformerNotationDiff,
   transformerNotationHighlight,
@@ -50,7 +52,17 @@ export default defineConfig({
   },
   markdown: {
     processor: unified({
-      rehypePlugins: [rehypeCallouts, rehypeLazyImages],
+      rehypePlugins: [
+        rehypeCallouts,
+        // Ids first so the permalinks below can point at them.
+        rehypeHeadingIds,
+        headingLinks,
+        [
+          rehypeExternalLinks,
+          { target: "_blank", rel: ["noopener", "noreferrer"] },
+        ],
+        rehypeLazyImages,
+      ],
     }),
     shikiConfig: {
       themes: { light: "min-light", dark: "night-owl" },
@@ -64,6 +76,11 @@ export default defineConfig({
       ],
     },
   },
+  // Load pages on hover so navigation feels instant (works with ClientRouter).
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "hover",
+  },
   vite: {
     plugins: [tailwindcss()],
   },
@@ -75,7 +92,9 @@ export default defineConfig({
       fallbacks: ["monospace"],
       weights: [300, 400, 500, 600, 700],
       styles: ["normal", "italic"],
-      formats: ["woff", "ttf"],
+      // Variable woff2: one file per style covers every weight. OG images
+      // load their own ttf subsets (see src/utils/loadGoogleFont.ts).
+      formats: ["woff2"],
     },
   ],
   env: {

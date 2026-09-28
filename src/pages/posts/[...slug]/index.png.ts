@@ -1,9 +1,7 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
-import { fontData, experimental_getFontFileURL } from "astro:assets";
 import satori from "satori";
 import sharp from "sharp";
-import { getFontPathByWeight } from "@/utils/getFontPathByWeight";
 import { loadGoogleFont } from "@/utils/loadGoogleFont";
 import { ogLogoDataUri } from "@/utils/ogLogo";
 import { getPostSlug } from "@/utils/getPostPaths";
@@ -26,29 +24,19 @@ export async function getStaticPaths() {
   }));
 }
 
-export const GET: APIRoute = async ({ props, url }) => {
+export const GET: APIRoute = async ({ props }) => {
   if (!config.features.dynamicOgImage) {
     return new Response(null, { status: 404, statusText: "Not found" });
   }
 
-  const fonts = fontData["--font-google-sans-code"];
-  const regularFontPath = getFontPathByWeight(fonts, 400);
-  const boldFontPath = getFontPathByWeight(fonts, 700);
-
-  if (regularFontPath === undefined || boldFontPath === undefined) {
-    throw new Error("Cannot find the font path.");
-  }
-
-  const ogText = `${props.data.title}by ${props.data.author}${config.site.title}`;
+  // Every glyph drawn, including the transparent `"` spacer after "by".
+  const ogText = `${props.data.title}by "${props.data.author}${config.site.title}`;
 
   const [regularData, boldData, cjkRegularData, cjkBoldData] =
     await Promise.all([
-      fetch(experimental_getFontFileURL(regularFontPath, url)).then(res =>
-        res.arrayBuffer()
-      ),
-      fetch(experimental_getFontFileURL(boldFontPath, url)).then(res =>
-        res.arrayBuffer()
-      ),
+      // Satori needs ttf/otf, so fetch subsets instead of the site's woff2.
+      loadGoogleFont("Google Sans Code", 400, ogText),
+      loadGoogleFont("Google Sans Code", 700, ogText),
       loadGoogleFont("Noto Sans SC", 400, ogText),
       loadGoogleFont("Noto Sans SC", 700, ogText),
     ]);
