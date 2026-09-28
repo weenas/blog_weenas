@@ -4,6 +4,7 @@ import { fontData, experimental_getFontFileURL } from "astro:assets";
 import satori from "satori";
 import sharp from "sharp";
 import { getFontPathByWeight } from "@/utils/getFontPathByWeight";
+import { loadGoogleFont } from "@/utils/loadGoogleFont";
 import { getPostSlug } from "@/utils/getPostPaths";
 import config from "@/config";
 
@@ -35,14 +36,19 @@ export const GET: APIRoute = async ({ props, url }) => {
     throw new Error("Cannot find the font path.");
   }
 
-  const [regularData, boldData] = await Promise.all([
-    fetch(experimental_getFontFileURL(regularFontPath, url)).then(res =>
-      res.arrayBuffer()
-    ),
-    fetch(experimental_getFontFileURL(boldFontPath, url)).then(res =>
-      res.arrayBuffer()
-    ),
-  ]);
+  const ogText = `${props.data.title}by ${props.data.author}${config.site.title}`;
+
+  const [regularData, boldData, cjkRegularData, cjkBoldData] =
+    await Promise.all([
+      fetch(experimental_getFontFileURL(regularFontPath, url)).then(res =>
+        res.arrayBuffer()
+      ),
+      fetch(experimental_getFontFileURL(boldFontPath, url)).then(res =>
+        res.arrayBuffer()
+      ),
+      loadGoogleFont("Noto Sans SC", 400, ogText),
+      loadGoogleFont("Noto Sans SC", 700, ogText),
+    ]);
 
   const svg = await satori(
     {
@@ -181,6 +187,18 @@ export const GET: APIRoute = async ({ props, url }) => {
         {
           name: "Google Sans Code",
           data: boldData,
+          weight: 700,
+          style: "normal",
+        },
+        {
+          name: "Noto Sans SC",
+          data: cjkRegularData,
+          weight: 400,
+          style: "normal",
+        },
+        {
+          name: "Noto Sans SC",
+          data: cjkBoldData,
           weight: 700,
           style: "normal",
         },

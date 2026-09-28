@@ -4,11 +4,11 @@ export default defineAstroPaperConfig({
   site: {
     url: "https://blog-astro-92t.pages.dev/",
     title: "Weenas Blog",
-    description: "A minimal, responsive and SEO-friendly Astro blog theme.",
+    description: "Eason 的技术笔记：网络、工具、嵌入式开发与生活记录。",
     author: "Eason Xiang",
     profile: "https://github.com/easonxiang",
     ogImage: "default-og.jpg",
-    lang: "en",
+    lang: "zh-CN",
     timezone: "Asia/Shanghai",
     dir: "ltr",
   },

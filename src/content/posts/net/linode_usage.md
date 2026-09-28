@@ -1,6 +1,5 @@
 ---
 title: linode 使用记
-slug: 8db64a10
 image: https://photo.weenas.com/sUN8UI.jpg
 date: 2016-12-21 14:48:15
 tags:

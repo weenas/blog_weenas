@@ -8,7 +8,7 @@ tags:
   - dotfile
 description: 好用的dotfile管理工具
 keywords:
-pubDatetime: 2026-09-16
+pubDatetime: 2026-09-17
 ---
 ## 前言
 
