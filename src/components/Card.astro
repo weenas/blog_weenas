@@ -1,5 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+import WeenasLogo from "@/assets/icons/WeenasLogo.svg";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { toTransitionName } from "@/utils/toTransitionName";
 import Datetime from "./Datetime.astro";
@@ -10,27 +12,55 @@ type Props = {
 
 const { variant: Heading = "h2", id, data, filePath } = Astro.props;
 
-const { title, description, ...props } = data;
+const { title, description, image, ...props } = data;
 ---
 
 <li
-  class="card group hover:border-accent relative p-5 hover:-translate-y-0.5 sm:p-6"
+  class="card group hover:border-accent relative flex gap-4 p-4 hover:-translate-y-0.5 sm:gap-6 sm:p-5"
 >
-  <Heading
-    transition:name={toTransitionName(id)}
-    class="text-foreground group-hover:text-accent text-lg leading-snug font-semibold transition-colors"
-  >
-    <a
-      href={getPostUrl(id, filePath, Astro.currentLocale)}
-      class="focus-visible:no-underline"
+  <div class="min-w-0 flex-1">
+    <Heading
+      transition:name={toTransitionName(id)}
+      class="text-foreground group-hover:text-accent text-lg leading-snug font-semibold transition-colors"
     >
-      <!-- The whole card is clickable. -->
-      <span class="absolute inset-0 rounded-2xl" aria-hidden="true"></span>
-      {title}
-    </a>
-  </Heading>
-  <Datetime {...props} class="mt-2" />
-  <p class="text-muted-foreground mt-2 line-clamp-3 text-[0.95rem]">
-    {description}
-  </p>
+      <a
+        href={getPostUrl(id, filePath, Astro.currentLocale)}
+        class="focus-visible:no-underline"
+      >
+        <!-- The whole card is clickable. -->
+        <span class="absolute inset-0 rounded-2xl" aria-hidden="true"></span>
+        {title}
+      </a>
+    </Heading>
+    <Datetime {...props} class="mt-2" />
+    <p class="text-muted-foreground mt-2 line-clamp-3 text-[0.95rem]">
+      {description}
+    </p>
+  </div>
+
+  <div
+    class="border-border bg-accent/5 aspect-[16/10] w-24 shrink-0 self-start overflow-hidden rounded-xl border sm:w-40"
+  >
+    {
+      image ? (
+        <Image
+          src={image}
+          alt=""
+          width={160}
+          height={100}
+          fit="cover"
+          layout="fixed"
+          sizes="(min-width: 640px) 160px, 96px"
+          class="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      ) : (
+        <div
+          aria-hidden="true"
+          class="from-accent/15 to-accent-2/10 flex size-full items-center justify-center bg-linear-to-br"
+        >
+          <WeenasLogo class="text-accent/60 h-1/2 w-auto" />
+        </div>
+      )
+    }
+  </div>
 </li>
