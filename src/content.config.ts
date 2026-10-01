@@ -59,6 +59,13 @@ const posts = defineCollection({
             if (typeof val === "string" && val.trim()) return [val.trim()];
             return ["uncategorized"];
           }),
+        // Cover image (URL), shown as the post card thumbnail. Obsidian may
+        // leave the key empty.
+        image: z
+          .string()
+          .nullable()
+          .optional()
+          .transform(val => val?.trim() || undefined),
         ogImage: image().or(z.string()).optional(),
         description: z.string(),
         canonicalURL: z.string().optional(),

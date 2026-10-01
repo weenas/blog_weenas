@@ -11,7 +11,7 @@ type Node = {
 const CONTENT_WIDTH = 768;
 
 /** Hosts whose images Astro may fetch and optimize (also used in astro.config). */
-export const IMAGE_DOMAINS = ["photo.weenas.com"];
+export const IMAGE_DOMAINS = ["photo.weenas.com", "cmake.org"];
 const REMOTE_IMAGE_CONFIG = { domains: IMAGE_DOMAINS, remotePatterns: [] };
 
 // Shared across posts: translations reuse the same images.
