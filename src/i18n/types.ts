@@ -37,6 +37,9 @@ export interface UIStrings {
     page: string;
   };
   home: {
+    heroEyebrow: string;
+    heroTitle: string;
+    heroLead: string;
     socialLinks: string;
     featured: string;
     recentPosts: string;

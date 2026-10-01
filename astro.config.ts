@@ -97,8 +97,9 @@ export default defineConfig({
       cssVariable: "--font-google-sans-code",
       provider: fontProviders.google(),
       fallbacks: ["monospace"],
-      weights: [300, 400, 500, 600, 700],
-      styles: ["normal", "italic"],
+      // Only code uses this font now; UI text is the system sans stack.
+      weights: [400, 700],
+      styles: ["normal"],
       // Variable woff2: one file per style covers every weight. OG images
       // load their own ttf subsets (see src/utils/loadGoogleFont.ts).
       formats: ["woff2"],

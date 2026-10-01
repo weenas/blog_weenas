@@ -39,6 +39,10 @@ export default {
     page: "Page",
   },
   home: {
+    heroEyebrow: "Hi, I'm Eason",
+    heroTitle: "Notes on networking, tools and embedded development",
+    heroLead:
+      "Hands-on write-ups from building a home network, self-hosting services and working on embedded systems — plus the occasional road trip.",
     socialLinks: "Social Links",
     featured: "Featured",
     recentPosts: "Recent Posts",

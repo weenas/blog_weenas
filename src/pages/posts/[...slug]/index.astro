@@ -144,7 +144,7 @@ const ogImage = ogImageUrl
             headings={tocHeadings}
             title={t.post.onThisPage}
             variant="sidebar"
-            class="sticky top-8 max-h-[calc(100svh-4rem)] overflow-y-auto"
+            class="sticky top-24 max-h-[calc(100svh-8rem)] overflow-y-auto"
           />
         </aside>
       )
@@ -152,7 +152,7 @@ const ogImage = ogImageUrl
 
     <h1
       style={{ viewTransitionName: toTransitionName(post.id) }}
-      class="text-accent inline-block text-2xl font-bold sm:text-3xl"
+      class="text-foreground inline-block text-3xl leading-tight font-bold tracking-tight text-balance sm:text-4xl"
     >
       {title}
     </h1>
@@ -214,7 +214,7 @@ const ogImage = ogImageUrl
 
     <BackToTopButton />
 
-    <ul class="mt-4 mb-8 flex flex-wrap gap-4 sm:my-8">
+    <ul class="mt-4 mb-8 flex flex-wrap gap-2 sm:my-8">
       {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
     </ul>
 

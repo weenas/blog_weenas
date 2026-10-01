@@ -13,8 +13,9 @@
       @apply text-foreground mb-3;
     }
 
+    h2,
     h3 {
-      @apply italic;
+      @apply font-bold tracking-tight;
     }
 
     p,
@@ -28,7 +29,12 @@
     }
 
     a {
-      @apply text-foreground hover:text-accent wrap-break-word decoration-dashed underline-offset-4 focus-visible:no-underline;
+      @apply text-accent hover:text-accent-hover decoration-accent/30 hover:decoration-accent-hover wrap-break-word underline-offset-4 focus-visible:no-underline;
+    }
+
+    /* The "#" permalinks next to headings stay quiet. */
+    .heading-link {
+      @apply text-muted-foreground hover:text-accent;
     }
 
     ul {
@@ -44,7 +50,7 @@
     }
 
     img {
-      @apply border-border mx-auto border;
+      @apply border-border mx-auto rounded-xl border;
     }
 
     img[role="button"] {
@@ -86,7 +92,7 @@
     }
 
     code {
-      @apply bg-muted/75 text-foreground rounded p-1 wrap-break-word before:content-none after:content-none;
+      @apply bg-muted text-foreground rounded-md px-1.5 py-0.5 font-mono text-[0.875em] font-normal wrap-break-word before:content-none after:content-none;
     }
 
     .astro-code code {
@@ -94,7 +100,7 @@
     }
 
     blockquote {
-      @apply border-s-accent/80 wrap-break-word opacity-80;
+      @apply border-s-accent bg-background-alt text-muted-foreground rounded-e-lg py-0.5 font-normal wrap-break-word not-italic;
     }
 
     details:not(.callout) {
@@ -112,7 +118,7 @@
 
   /* ===== Code Blocks & Syntax Highlighting ===== */
   .astro-code {
-    @apply outline-border flex border bg-(--shiki-light-bg) text-(--shiki-light) [&_span]:text-(--shiki-light);
+    @apply outline-border flex rounded-xl border bg-(--shiki-light-bg) font-mono text-(--shiki-light) [&_span]:text-(--shiki-light);
   }
 
   html[data-theme="dark"] .astro-code {

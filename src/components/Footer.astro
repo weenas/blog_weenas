@@ -14,11 +14,15 @@ const currentYear = new Date().getFullYear();
 ---
 
 <footer
-  class:list={["app-layout", { "mt-auto": !noMarginTop }, className]}
+  class:list={[
+    "border-border text-muted-foreground mt-12 border-t text-sm",
+    { "mt-auto!": !noMarginTop },
+    className,
+  ]}
   {...attrs}
 >
   <div
-    class="border-border flex flex-col items-center justify-between border-t py-6 sm:flex-row-reverse sm:py-4"
+    class="app-layout flex flex-col items-center justify-between py-6 sm:flex-row-reverse"
   >
     <Socials />
     <div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row">

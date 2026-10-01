@@ -37,6 +37,10 @@ export default {
     page: "页",
   },
   home: {
+    heroEyebrow: "你好，我是 Eason",
+    heroTitle: "网络、工具与嵌入式开发笔记",
+    heroLead:
+      "记录搭建家庭网络、自建服务和嵌入式开发中的实践经验，偶尔也写写旅行。",
     socialLinks: "社交链接",
     featured: "精选",
     recentPosts: "最新文章",

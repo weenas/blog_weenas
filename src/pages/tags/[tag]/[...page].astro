@@ -52,7 +52,7 @@ const t = useTranslations(locale);
     pageTitle={`${t.pages.tagTitle}: ${tagName}`}
     pageDesc={`${t.pages.tagDesc} "${tagName}".`}
   >
-    <ul>
+    <ul class="grid gap-4">
       {pagePosts.map(data => <Card {...data} />)}
     </ul>
   </Main>
