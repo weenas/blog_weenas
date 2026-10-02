@@ -1,4 +1,4 @@
-import { inferRemoteSize } from "astro/assets/utils/inferRemoteSize.js";
+import { probeImageSize } from "../remoteImages";
 
 type Node = {
   type: string;
@@ -10,17 +10,13 @@ type Node = {
 /** Display width of post images: the `max-w-3xl` content column. */
 const CONTENT_WIDTH = 768;
 
-/** Hosts whose images Astro may fetch and optimize (also used in astro.config). */
-export const IMAGE_DOMAINS = ["photo.weenas.com", "cmake.org"];
-const REMOTE_IMAGE_CONFIG = { domains: IMAGE_DOMAINS, remotePatterns: [] };
-
 // Shared across posts: translations reuse the same images.
 const sizeCache = new Map<string, Promise<{ width: number; height: number }>>();
 
 function probe(src: string) {
   let size = sizeCache.get(src);
   if (!size) {
-    size = inferRemoteSize(src, REMOTE_IMAGE_CONFIG);
+    size = probeImageSize(src);
     sizeCache.set(src, size);
   }
   return size;

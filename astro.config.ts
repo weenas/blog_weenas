@@ -10,7 +10,14 @@ import sitemap from "@astrojs/sitemap";
 import { rehypeHeadingIds, unified } from "@astrojs/markdown-remark";
 import rehypeCallouts from "rehype-callouts";
 import rehypeExternalLinks from "rehype-external-links";
-import rehypeLazyImages, { IMAGE_DOMAINS } from "./src/utils/rehype/lazyImages";
+import rehypeLazyImages from "./src/utils/rehype/lazyImages";
+import {
+  IMAGE_DOMAINS,
+  installImageFetchRetry,
+} from "./src/utils/remoteImages";
+
+// Retry/timeout for remote image downloads during the build (see the helper).
+installImageFetchRetry();
 import { headingLinks } from "./src/utils/rehype/headingLinks";
 import {
   transformerNotationDiff,
