@@ -1,3 +1,4 @@
+/* eslint-disable no-console -- CLI script: its output is the report. */
 // Fails the build when a page references a /_astro/ file that wasn't
 // written, e.g. an image whose download broke (Astro only warns about it).
 // A failed build keeps the previous deployment live on Cloudflare Pages.
