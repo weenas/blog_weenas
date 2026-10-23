@@ -1,6 +1,6 @@
 ---
 title: My Linode Experience
-image: https://photo.weenas.com/sUN8UI.jpg
+image: https://img.weenas.com/sUN8UI.jpg
 date: 2016-12-21 14:48:15
 tags:
   - network
@@ -22,7 +22,7 @@ I had only ever set up servers on a LAN or in virtual machines and never paid at
 
 The symptom was a flood of outgoing data. As the chart below shows, it was sending at almost full capacity for three days (note the units on the left), and my 2 TB of transfer was used up in less than two days. The system actually sends an email alert at 80% usage, but it was the National Day holiday and I didn't take the email seriously. Later Linode support noticed the anomaly and proactively opened a ticket asking what was going on — only then did I discover I was more than 400 GB over my quota...
 
-![linode_data_traffic.jpg](https://photo.weenas.com/MYs6OE.jpg)
+![linode_data_traffic.jpg](https://img.weenas.com/MYs6OE.jpg)
 
 I quickly logged in and used nethogs to check network usage. A process named mysql515 was sending data out at about 80 Mbps. I killed it immediately and then figured out how to clean up.
 

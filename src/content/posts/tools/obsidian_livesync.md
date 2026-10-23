@@ -1,6 +1,6 @@
 ---
 title: Obsidian多设备实时同步方法
-image: https://photo.weenas.com/WLP8JP.png
+image: https://img.weenas.com/WLP8JP.png
 date: 2023-06-04
 tags:
   - Docker
@@ -14,7 +14,7 @@ keywords:
 pubDatetime: 2023-06-04
 ---
 
-![Obsidian](https://photo.weenas.com/WLP8JP.png)
+![Obsidian](https://img.weenas.com/WLP8JP.png)
 Obsidian意为”黑曜石“，是一个功能强大的Markdown笔记软件，对跨平台的支持非常好。官方提供了笔记同步功能，但是价格不太友好，因此在这里介绍一种免费的实时同步方案。
 
 <!--more-->
@@ -57,17 +57,17 @@ docker run -d --name my-couchdb -e COUCHDB_USER=admin -e COUCHDB_PASSWORD=passwo
 http://10.1.1.6:5984/_utils
 ```
 
-![1685865043548.png](https://photo.weenas.com/NY0ci2.png)
+![1685865043548.png](https://img.weenas.com/NY0ci2.png)
 在这个界面里，可以配置和添加用户，添加数据库。比如我添加了一个叫`notes`的数据库，等下可以指定使用此数据库。
 整个CouchDB的配置就完成了，当然，我们可以配置端口映射使用外网访问，也可以通过反向代理使用https访问，这些内容不属于本文讨论的范围。
 ## Self Hosted LiveSync
 [Self Hosted LiveSync](https://github.com/vrtmrz/obsidian-livesync/blob/main/README_cn.md)是一个社区提供的在线同步插件，基于CouchDB实现多设备间接近实时同步的效果。
 
 在Obsidian三方插件库搜索`livesync`，点击安装并启用。
-![1685865928574.png](https://photo.weenas.com/wjJf4x.png)
+![1685865928574.png](https://img.weenas.com/wjJf4x.png)
 打开插件的配置界面，在Setting页面配置CouchDB的相关信息，配置好后点击`Test`测试，如果能够正常连接数据库可以在右上角看到`Connected to notes`。
-![1685866586245.png](https://photo.weenas.com/zsEE2Q.png)
+![1685866586245.png](https://img.weenas.com/zsEE2Q.png)
 再打开`Sync Setting`配置页面，选择`LiveSync`后再`Apply`，整个配置就完成了。
-![1685866745070.png](https://photo.weenas.com/fzPpis.png)
+![1685866745070.png](https://img.weenas.com/fzPpis.png)
 接下来可以在其他设备上的Obsidian进行同样的配置，就可以看到官方演示的同步效果：
-![1685866069249.gif](https://photo.weenas.com/TV4Rkh.gif)
+![1685866069249.gif](https://img.weenas.com/TV4Rkh.gif)

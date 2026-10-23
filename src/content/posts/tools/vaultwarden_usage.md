@@ -1,6 +1,6 @@
 ---
 title: Vaultwarden 使用介绍
-image: https://photo.weenas.com/T2NDqO.png
+image: https://img.weenas.com/T2NDqO.png
 date: 2023-08-13
 tags:
   - tools
@@ -20,7 +20,7 @@ pubDatetime: 2023-08-13
 基于以上原因，最近发现了一款新的解决方案能够完美解决以上问题，并在使用过程中大大超出期望值，无比方便的密码管理器——[Bitwarden](https://bitwarden.com/)
 
 Bitwarden为个人用户提供免费版本，日常使用足够了，高级功能需要付费，价格如下，如果觉得好用也可以支持下开发者。
-![](https://photo.weenas.com/N4C4Jy.png)
+![](https://img.weenas.com/N4C4Jy.png)
 
 ## 自建服务
 
@@ -37,23 +37,23 @@ docker run -d --name vaultwarden -v /vw-data/:/data/ -p 80:80 vaultwarden/server
 ## 管理配置
 
 在开始使用前可以访问后台设置一些修改化参数，比如配置smtp邮件服务器，这样才能够使用邮箱注册，开通2级认证，发送重要通知等功能。后台管理界面如下：
-![1691935613099.png](https://photo.weenas.com/2MkyWu.png)
+![1691935613099.png](https://img.weenas.com/2MkyWu.png)
 
 ## 注册用户
 
 设置好后台参数后，把web路径的admin去掉就可以进入到用户界面，系统默认是支持邮件注册的，先使用邮件地址创建个人帐户，后期为了安全起见，可以在后台关闭新用户注册功能。
-![1691935763502.png](https://photo.weenas.com/2MkyWu.png)
+![1691935763502.png](https://img.weenas.com/2MkyWu.png)
 
 点击创建帐户，输入邮箱地址和主密码，主密码就是该帐户的管理密码，需要牢记，这是访问其它密码的钥匙。
-![1691936840281.png](https://photo.weenas.com/GkgKWI.png)
+![1691936840281.png](https://img.weenas.com/GkgKWI.png)
 
 创建后系统会使用配置的smtp服务自动发送验证邮件，点击验证邮件的验证链接后帐户才能开始使用。
-![1691937163354.png](https://photo.weenas.com/f1FXz9.png)
+![1691937163354.png](https://img.weenas.com/f1FXz9.png)
 
 ## 基本功能
 
 邮箱验证后，使用邮箱和主密码登录，能够看到主界面如下：
-![1691937281163.png](https://photo.weenas.com/mZ2iqD.png)
+![1691937281163.png](https://img.weenas.com/mZ2iqD.png)
 
 从主界面能够大致了解到，主要功能包括存储登录密码信息，支付卡信息，身份信息和做一些保密性的笔记，反正都属于私密性非常高的信息。如果保存的信息很多，还可以通过文件夹进行分类，方便需要时迅速找到信息。
 

@@ -1,7 +1,7 @@
 ---
 title: Dual-Stack Access to a Home Network
 date: 2025-11-24T18:53:13+08:00
-image: https://photo.weenas.com/cT0W3h.png
+image: https://img.weenas.com/cT0W3h.png
 tags:
   - network
 keywords:
@@ -34,7 +34,7 @@ How IPv4 traffic gets forwarded depends on which of two situations you're in:
 
 In the first case, where the VPS supports both IPv4 and IPv6, things are relatively easy: just use Socat's IPv4-to-IPv6 port forwarding, as shown below:
 
-![ipv4_ipv6_dual.drawio.png](https://photo.weenas.com/H3wT31.png)
+![ipv4_ipv6_dual.drawio.png](https://img.weenas.com/H3wT31.png)
 
 The VPS uses Socat to listen on an IPv4 port and forwards incoming requests to the home gateway over IPv6, making the home network reachable indirectly over IPv4.
 
@@ -52,7 +52,7 @@ In the second case, the VPS has only an IPv4 address, so it can't establish an I
 
 This is where a second tool comes in: `FRP`, an open-source client/server application. The idea is fairly simple: the VPS can't reach the home gateway directly, but the VPS does have a public IPv4 address. So we first run the server, `FRPS`, on the VPS, then run the client, `FRPC`, on the home gateway, which opens a TCP connection to FRPS. FRPS and FRPC can now communicate in both directions, which makes it possible to forward IPv4 requests from the internet to the home gateway.
 
-![ipv4_ipv6_dual_FRP.png](https://photo.weenas.com/cT0W3h.png)
+![ipv4_ipv6_dual_FRP.png](https://img.weenas.com/cT0W3h.png)
 
 FRP calls this feature a reverse proxy; you can also think of it as a tunnel between FRPS and FRPC through which data is forwarded.
 
