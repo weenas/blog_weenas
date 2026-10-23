@@ -24,7 +24,8 @@ const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const leadPost = featuredPosts[0] ?? sortedPosts[0];
 const recentPosts = sortedPosts.filter(
-  ({ data, id }) => !data.featured && (featuredPosts.length > 0 || id !== leadPost?.id)
+  ({ data, id }) =>
+    !data.featured && (featuredPosts.length > 0 || id !== leadPost?.id)
 );
 const extraFeatured = featuredPosts.slice(1);
 const homePath = getRelativeLocaleUrl(locale, "");
@@ -41,127 +42,994 @@ const rssPath = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`;
   >
     <section class="journal-hero">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot"></span>{t.home.heroEyebrow}</p>
+        <p class="eyebrow">
+          <span class="status-dot"></span>{t.home.heroEyebrow}
+        </p>
         <h1>{t.home.heroTitle}</h1>
         <p class="hero-lead">{t.home.heroLead}</p>
         <div class="hero-links">
-          <LinkButton href={getRelativeLocaleUrl(locale, "posts")} class="primary-action">
+          <LinkButton
+            href={getRelativeLocaleUrl(locale, "posts")}
+            class="primary-action"
+          >
             {t.home.allPosts}<IconArrowRight class="size-4 rtl:-rotate-180" />
           </LinkButton>
-          <a href={rssPath} target="_blank" class="rss-action"><IconRss class="size-4" />RSS</a>
+          <a href={rssPath} target="_blank" class="rss-action"
+            ><IconRss class="size-4" />RSS</a
+          >
         </div>
-        {socials.length > 0 && <div class="social-row"><span>{t.home.socialLinks}</span><Socials /></div>}
+        {
+          socials.length > 0 && (
+            <div class="social-row">
+              <>
+                <span>{t.home.socialLinks}</span>
+                <Socials />
+              </>
+            </div>
+          )
+        }
       </div>
       <div class="signal-panel" aria-label="技术笔记主题示意图">
-        <div class="panel-head"><span>FIELD NOTES / 01</span><span class="panel-live"><i></i> ONLINE</span></div>
+        <div class="panel-head">
+          <span>FIELD NOTES / 01</span><span class="panel-live"
+            ><i></i> ONLINE</span
+          >
+        </div>
         <div class="signal-map" aria-hidden="true">
           <div class="signal-grid"></div>
-          <span class="trace trace-a"></span><span class="trace trace-b"></span><span class="trace trace-c"></span>
-          <span class="signal-node node-main"><b>W</b><small>WEENAS</small></span>
-          <span class="signal-node node-net"><b>NET</b><small>NETWORK</small></span>
-          <span class="signal-node node-code"><b>&lt;/&gt;</b><small>EMBEDDED</small></span>
-          <span class="signal-node node-life"><b>✳</b><small>FIELD</small></span>
-          <span class="pulse pulse-a"></span><span class="pulse pulse-b"></span><span class="pulse pulse-c"></span>
-          <span class="map-coord coord-a">31°13' N</span><span class="map-coord coord-b">121°28' E</span>
+          <span class="trace trace-a"></span><span class="trace trace-b"
+          ></span><span class="trace trace-c"></span>
+          <span class="signal-node node-main"
+            ><b>W</b><small>WEENAS</small></span
+          >
+          <span class="signal-node node-net"
+            ><b>NET</b><small>NETWORK</small></span
+          >
+          <span class="signal-node node-code"
+            ><b>&lt;/&gt;</b><small>EMBEDDED</small></span
+          >
+          <span class="signal-node node-life"><b>✳</b><small>FIELD</small></span
+          >
+          <span class="pulse pulse-a"></span><span class="pulse pulse-b"
+          ></span><span class="pulse pulse-c"></span>
+          <span class="map-coord coord-a">31°13' N</span><span
+            class="map-coord coord-b">121°28' E</span
+          >
         </div>
-        <div class="panel-foot"><span>TECH · HOME LAB · LIFE</span><span>EST. 2016</span></div>
+        <div class="panel-foot">
+          <span>TECH · HOME LAB · LIFE</span><span>EST. 2016</span>
+        </div>
       </div>
     </section>
 
-    {leadPost && (
-      <section class="featured-section" aria-labelledby="featured-title">
-        <div class="section-heading">
-          <div><p class="section-code">01 / SELECTED READING</p><h2 id="featured-title">{t.home.featured}</h2></div>
-          <span class="section-aside">START HERE <span>↘</span></span>
-        </div>
-        <article class="featured-card">
-          <a class="featured-image" href={getPostUrl(leadPost.id, leadPost.filePath, locale)} aria-label={leadPost.data.title}>
-            {leadPost.data.image ? <img src={leadPost.data.image} alt="" width="720" height="440" fetchpriority="high" decoding="async" /> : (
-              <div class="feature-art" aria-hidden="true"><span class="art-ring ring-one"></span><span class="art-ring ring-two"></span><span class="art-core">W.</span><span class="art-label">SYSTEM / NETWORK</span></div>
-            )}
-            <span class="image-index">FEATURED <b>01</b></span>
-          </a>
-          <div class="featured-copy">
-            <p class="article-category">{leadPost.data.tags?.[0] ?? "NOTES"}</p>
-            <h3><a href={getPostUrl(leadPost.id, leadPost.filePath, locale)}>{leadPost.data.title}</a></h3>
-            <p class="article-description">{leadPost.data.description}</p>
-            <div class="article-bottom"><Datetime {...leadPost.data} /><a class="read-link" href={getPostUrl(leadPost.id, leadPost.filePath, locale)} aria-label={`${leadPost.data.title} →`}>READ NOTE <span>↗</span></a></div>
-          </div>
-        </article>
-      </section>
-    )}
-
-    {extraFeatured.length > 0 && (
-      <section class="more-featured" aria-label={t.home.featured}>
-        {extraFeatured.map((post, index) => (
-          <a class="mini-feature" href={getPostUrl(post.id, post.filePath, locale)}>
-            <span class="mini-image">
-              {post.data.image ? <img src={post.data.image} alt="" width="140" height="92" loading="lazy" decoding="async" /> : <span class="cover-placeholder" aria-hidden="true">{post.data.tags?.[0]?.slice(0, 2).toUpperCase() ?? "W"}</span>}
+    {
+      leadPost && (
+        <section class="featured-section" aria-labelledby="featured-title">
+          <div class="section-heading">
+            <div>
+              <>
+                <p class="section-code">01 / SELECTED READING</p>
+                <h2 id="featured-title">{t.home.featured}</h2>
+              </>
+            </div>
+            <span class="section-aside">
+              START HERE <span>↘</span>
             </span>
-            <span class="mini-index">F / {String(index + 2).padStart(2, "0")}</span>
-            <span class="mini-title">{post.data.title}</span><span class="mini-arrow">↗</span>
-          </a>
-        ))}
-      </section>
-    )}
+          </div>
+          <article class="featured-card">
+            <a
+              class="featured-image"
+              href={getPostUrl(leadPost.id, leadPost.filePath, locale)}
+              aria-label={leadPost.data.title}
+            >
+              {leadPost.data.image ? (
+                <img
+                  src={leadPost.data.image}
+                  alt=""
+                  width="720"
+                  height="440"
+                  fetchpriority="high"
+                  decoding="async"
+                />
+              ) : (
+                <div class="feature-art" aria-hidden="true">
+                  <span class="art-ring ring-one" />
+                  <span class="art-ring ring-two" />
+                  <span class="art-core">W.</span>
+                  <span class="art-label">SYSTEM / NETWORK</span>
+                </div>
+              )}
+              <span class="image-index">
+                FEATURED <b>01</b>
+              </span>
+            </a>
+            <div class="featured-copy">
+              <p class="article-category">
+                {leadPost.data.tags?.[0] ?? "NOTES"}
+              </p>
+              <h3>
+                <a href={getPostUrl(leadPost.id, leadPost.filePath, locale)}>
+                  {leadPost.data.title}
+                </a>
+              </h3>
+              <p class="article-description">{leadPost.data.description}</p>
+              <div class="article-bottom">
+                <>
+                  <Datetime {...leadPost.data} />
+                  <a
+                    class="read-link"
+                    href={getPostUrl(leadPost.id, leadPost.filePath, locale)}
+                    aria-label={`${leadPost.data.title} →`}
+                  >
+                    READ NOTE <span>↗</span>
+                  </a>
+                </>
+              </div>
+            </div>
+          </article>
+        </section>
+      )
+    }
 
-    {recentPosts.length > 0 && (
-      <section class="latest-section" aria-labelledby="recent-title">
-        <div class="section-heading">
-          <div><p class="section-code">02 / LATEST ENTRIES</p><h2 id="recent-title">{t.home.recentPosts}</h2></div>
-          <a class="section-aside section-link" href={getRelativeLocaleUrl(locale, "posts")}>{t.home.allPosts}<span>↗</span></a>
-        </div>
-        <div class="entry-list">
-          {recentPosts.slice(0, postsConfig.perIndex).map((post, index) => (
-            <article class="entry-row">
-              <span class="entry-index">{String(index + 1).padStart(2, "0")}</span>
-              <a class="entry-thumbnail" href={getPostUrl(post.id, post.filePath, locale)} aria-label={post.data.title}>
-                {post.data.image ? <img src={post.data.image} alt="" width="176" height="112" loading="lazy" decoding="async" /> : <span class="cover-placeholder" aria-hidden="true">{post.data.tags?.[0]?.slice(0, 2).toUpperCase() ?? "W"}</span>}
-              </a>
-              <div class="entry-main"><p class="entry-meta"><span>{post.data.tags?.[0] ?? "NOTES"}</span><i>·</i><Datetime {...post.data} /></p><h3><a href={getPostUrl(post.id, post.filePath, locale)}>{post.data.title}</a></h3><p class="entry-description">{post.data.description}</p></div>
-              <a class="entry-arrow" href={getPostUrl(post.id, post.filePath, locale)} aria-label={`${post.data.title} →`}>↗</a>
-            </article>
+    {
+      extraFeatured.length > 0 && (
+        <section class="more-featured" aria-label={t.home.featured}>
+          {extraFeatured.map((post, index) => (
+            <a
+              class="mini-feature"
+              href={getPostUrl(post.id, post.filePath, locale)}
+            >
+              <span class="mini-image">
+                {post.data.image ? (
+                  <img
+                    src={post.data.image}
+                    alt=""
+                    width="140"
+                    height="92"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <span class="cover-placeholder" aria-hidden="true">
+                    {post.data.tags?.[0]?.slice(0, 2).toUpperCase() ?? "W"}
+                  </span>
+                )}
+              </span>
+              <span class="mini-index">
+                F / {String(index + 2).padStart(2, "0")}
+              </span>
+              <span class="mini-title">{post.data.title}</span>
+              <span class="mini-arrow">↗</span>
+            </a>
           ))}
-        </div>
-        <div class="all-posts-row"><LinkButton href={getRelativeLocaleUrl(locale, "posts")} class="all-posts-button">{t.home.allPosts}<IconArrowRight class="size-4 rtl:-rotate-180" /></LinkButton></div>
-      </section>
-    )}
+        </section>
+      )
+    }
+
+    {
+      recentPosts.length > 0 && (
+        <section class="latest-section" aria-labelledby="recent-title">
+          <div class="section-heading">
+            <div>
+              <>
+                <p class="section-code">02 / LATEST ENTRIES</p>
+                <h2 id="recent-title">{t.home.recentPosts}</h2>
+              </>
+            </div>
+            <a
+              class="section-aside section-link"
+              href={getRelativeLocaleUrl(locale, "posts")}
+            >
+              {t.home.allPosts}
+              <span>↗</span>
+            </a>
+          </div>
+          <div class="entry-list">
+            {recentPosts.slice(0, postsConfig.perIndex).map((post, index) => (
+              <article class="entry-row">
+                <span class="entry-index">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <a
+                  class="entry-thumbnail"
+                  href={getPostUrl(post.id, post.filePath, locale)}
+                  aria-label={post.data.title}
+                >
+                  {post.data.image ? (
+                    <img
+                      src={post.data.image}
+                      alt=""
+                      width="176"
+                      height="112"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <span class="cover-placeholder" aria-hidden="true">
+                      {post.data.tags?.[0]?.slice(0, 2).toUpperCase() ?? "W"}
+                    </span>
+                  )}
+                </a>
+                <div class="entry-main">
+                  <p class="entry-meta">
+                    <span>{post.data.tags?.[0] ?? "NOTES"}</span>
+                    <i>·</i>
+                    <Datetime {...post.data} />
+                  </p>
+                  <h3>
+                    <a href={getPostUrl(post.id, post.filePath, locale)}>
+                      {post.data.title}
+                    </a>
+                  </h3>
+                  <p class="entry-description">{post.data.description}</p>
+                </div>
+                <a
+                  class="entry-arrow"
+                  href={getPostUrl(post.id, post.filePath, locale)}
+                  aria-label={`${post.data.title} →`}
+                >
+                  ↗
+                </a>
+              </article>
+            ))}
+          </div>
+          <div class="all-posts-row">
+            <LinkButton
+              href={getRelativeLocaleUrl(locale, "posts")}
+              class="all-posts-button"
+            >
+              {t.home.allPosts}
+              <IconArrowRight class="size-4 rtl:-rotate-180" />
+            </LinkButton>
+          </div>
+        </section>
+      )
+    }
   </main>
   <Footer />
 </Layout>
 
 <script>
   document.addEventListener("astro:page-load", () => {
-    const indexLayout = (document.querySelector("#main-content") as HTMLElement)?.dataset;
+    const indexLayout = (document.querySelector("#main-content") as HTMLElement)
+      ?.dataset;
     const baseRoot = import.meta.env.BASE_URL.replace(/\/?$/, "/");
-    if (indexLayout?.layout) sessionStorage.setItem("backUrl", indexLayout.homePath ?? baseRoot);
+    if (indexLayout?.layout)
+      sessionStorage.setItem("backUrl", indexLayout.homePath ?? baseRoot);
   });
 </script>
 
 <style>
-  .journal-layout{max-width:64rem;margin:0 auto;width:100%;padding:0 1.5rem 2rem;color:var(--foreground)}
-  .journal-hero{display:grid;grid-template-columns:1.05fr .95fr;gap:3rem;align-items:center;padding:4.6rem 0 4rem}
-  .eyebrow,.section-code,.section-aside,.panel-head,.panel-foot,.article-category,.read-link,.image-index,.mini-index{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.13em}
-  .eyebrow{display:flex;align-items:center;gap:.65rem;color:var(--accent);font-weight:650;margin:0 0 1.3rem}
-  .status-dot,.panel-live i{width:.45rem;height:.45rem;border-radius:50%;background:var(--accent-2);box-shadow:0 0 12px color-mix(in srgb,var(--accent-2),transparent 25%)}
-  .hero-copy h1{max-width:11em;font-size:clamp(2.45rem,5vw,4rem);line-height:1.12;letter-spacing:-.055em;font-weight:760;margin:0}
-  .hero-lead{max-width:35rem;margin:1.25rem 0 0;color:var(--muted-foreground);font-size:1rem;line-height:1.85}
-  .hero-links{display:flex;align-items:center;gap:1rem;margin-top:1.7rem}.primary-action{background:#12283c!important;color:#fff!important;border-color:#12283c!important;border-radius:.45rem!important;padding:.65rem 1rem!important}.dark .primary-action{background:#5be1bd!important;color:#07141e!important;border-color:#5be1bd!important}.rss-action{display:inline-flex;align-items:center;gap:.45rem;color:var(--muted-foreground);font-size:.85rem}.rss-action:hover{color:var(--accent)}
-  .social-row{display:flex;align-items:center;gap:.8rem;margin-top:1.6rem;color:var(--muted-foreground);font: .62rem var(--font-mono);letter-spacing:.06em}.social-row :global(a){opacity:.8}.social-row :global(a:hover){opacity:1}
-  .signal-panel{--panel:#0c1727;--panel-line:#263d50;--panel-muted:#9bafc1;position:relative;overflow:hidden;min-height:275px;border:1px solid var(--panel-line);border-radius:.75rem;background:radial-gradient(ellipse at 52% 47%,#19384a 0,transparent 56%),var(--panel);color:#e7f2f4;box-shadow:0 22px 55px #0817281a}
-  .panel-head,.panel-foot{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:1rem 1.15rem;color:var(--panel-muted);font-size:.58rem}.panel-head{border-bottom:1px solid #ffffff12}.panel-live{display:flex;align-items:center;gap:.45rem;color:#5be1bd}.panel-live i{width:.35rem;height:.35rem}
-  .signal-map{position:relative;height:190px;overflow:hidden}.signal-grid{position:absolute;inset:0;background-image:linear-gradient(#8ab1c412 1px,transparent 1px),linear-gradient(90deg,#8ab1c412 1px,transparent 1px);background-size:24px 24px;mask-image:linear-gradient(transparent,#000 15%,#000 85%,transparent)}
-  .signal-node{position:absolute;z-index:2;display:grid;place-items:center;width:54px;height:54px;border:1px solid #4d8c91;border-radius:12px;background:#102537;box-shadow:0 0 24px #5be1bd12;color:#5be1bd}.signal-node b{font:700 .75rem var(--font-mono)}.signal-node small{font: .43rem var(--font-mono);letter-spacing:.08em;color:#b3c8d2}.node-main{left:calc(50% - 27px);top:calc(50% - 27px);width:62px;height:62px;border-color:#5be1bd;border-radius:50%;background:#123442;box-shadow:0 0 0 8px #5be1bd13,0 0 35px #5be1bd24}.node-main b{font-size:1.2rem}.node-net{left:15%;top:17%}.node-code{right:14%;top:18%}.node-life{right:22%;bottom:5%}
-  .trace{position:absolute;height:1px;background:#5be1bd73;transform-origin:left center}.trace-a{left:25%;top:36%;width:28%;transform:rotate(20deg)}.trace-b{left:51%;top:48%;width:26%;transform:rotate(-25deg)}.trace-c{left:53%;top:53%;width:26%;transform:rotate(38deg)}.pulse{position:absolute;z-index:1;width:5px;height:5px;border-radius:50%;background:#5be1bd;box-shadow:0 0 9px 3px #5be1bd55}.pulse-a{left:34%;top:40%}.pulse-b{right:31%;top:35%}.pulse-c{right:34%;bottom:17%}.map-coord{position:absolute;color:#7597a8;font: .5rem var(--font-mono);letter-spacing:.08em}.coord-a{left:1rem;bottom:.45rem}.coord-b{right:1rem;bottom:.45rem}.panel-foot{border-top:1px solid #ffffff12;padding-top:.75rem;padding-bottom:.75rem;font-size:.53rem;letter-spacing:.11em}
-  .section-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:1.15rem}.section-code{color:var(--accent);font-size:.57rem;margin:0 0 .42rem}.section-heading h2{font-size:1.5rem;line-height:1.2;letter-spacing:-.04em;font-weight:720;margin:0}.section-aside{display:flex;align-items:center;gap:.65rem;color:var(--muted-foreground);font-size:.57rem}.section-aside span{color:var(--accent)}
-  .featured-section{padding-bottom:3.2rem}.featured-card{display:grid;grid-template-columns:.95fr 1.05fr;min-height:230px;border:1px solid var(--border);border-radius:.7rem;overflow:hidden;background:var(--surface);box-shadow:var(--card-shadow)}.featured-image{position:relative;display:block;min-height:225px;overflow:hidden;background:linear-gradient(135deg,#173148,#14283c 58%,#1b4149)}.featured-image :global(img){position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s}.featured-card:hover .featured-image :global(img){transform:scale(1.04)}.image-index{position:absolute;left:1rem;top:1rem;padding:.42rem .55rem;border:1px solid #ffffff55;border-radius:.25rem;background:#0c1c2aa8;color:#d9e9ea;font-size:.52rem}.image-index b{color:#5be1bd;margin-left:.45rem}
-  .feature-art{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(circle at center,#224657 0,#142b3d 42%,#102032 75%)}.art-ring{position:absolute;left:50%;top:50%;width:230px;height:150px;border:1px solid #69d9c355;border-radius:50%;transform:translate(-50%,-50%) rotate(-30deg)}.ring-two{width:270px;height:190px;transform:translate(-50%,-50%) rotate(28deg);border-color:#8bb7d044}.art-core{display:grid;place-items:center;width:74px;height:74px;border:1px solid #5be1bd;border-radius:50%;background:#173c4a;color:#5be1bd;font-size:1.5rem;font-weight:800;box-shadow:0 0 0 12px #5be1bd12,0 0 45px #5be1bd2b}.art-label{position:absolute;bottom:1.1rem;left:1rem;color:#a3c1c6;font: .55rem var(--font-mono);letter-spacing:.15em}
-  .featured-copy{display:flex;flex-direction:column;justify-content:center;padding:1.6rem 1.8rem}.article-category{align-self:flex-start;color:var(--accent);font-size:.56rem;text-transform:uppercase;margin:0 0 .8rem}.featured-copy h3{font-size:1.45rem;line-height:1.35;letter-spacing:-.035em;margin:0}.featured-copy h3 a{color:var(--foreground)}.featured-copy h3 a:hover,.entry-main h3 a:hover{color:var(--accent)}.article-description{font-size:.83rem;line-height:1.75;color:var(--muted-foreground);margin:.7rem 0 1.15rem}.article-bottom{display:flex;justify-content:space-between;align-items:center;gap:.7rem;border-top:1px solid var(--border);padding-top:.8rem}.article-bottom :global(svg){color:var(--accent);width:1rem;min-width:1rem}.article-bottom :global(time){font: .65rem var(--font-mono)}.read-link{white-space:nowrap;color:var(--accent);font-size:.55rem;font-weight:700}.read-link span{padding-left:.35rem}
-  .more-featured{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin-top:-2rem;padding-bottom:3rem}.mini-feature{display:grid;grid-template-columns:64px auto 1fr auto;gap:.8rem;align-items:center;padding:.65rem .75rem;border:1px solid var(--border);border-radius:.5rem;background:var(--surface)}.mini-image{display:block;aspect-ratio:1.5;overflow:hidden;border-radius:.35rem;background:var(--background-alt)}.mini-image :global(img),.entry-thumbnail :global(img){display:block;width:100%;height:100%;object-fit:cover;transition:transform .3s}.mini-feature:hover .mini-image :global(img),.entry-thumbnail:hover :global(img){transform:scale(1.05)}.mini-index{font-size:.52rem;color:var(--accent)}.mini-title{font-size:.85rem;font-weight:650}.mini-arrow{color:var(--accent)}
-  .cover-placeholder{display:grid;place-items:center;width:100%;height:100%;background:radial-gradient(circle at 70% 25%,#5be1bd3b,transparent 35%),linear-gradient(135deg,#14283c,#1c4652);color:#75dfca;font:700 .8rem var(--font-mono);letter-spacing:.08em}.latest-section{padding-bottom:1rem}.entry-list{border-top:1px solid var(--border)}.entry-row{display:grid;grid-template-columns:34px 132px 1fr 22px;gap:1rem;align-items:center;padding:1rem .4rem;border-bottom:1px solid var(--border);transition:background .2s}.entry-row:hover{background:color-mix(in srgb,var(--accent) 4%,transparent)}.entry-index{padding-top:.1rem;color:var(--accent);font: .68rem var(--font-mono)}.entry-thumbnail{display:block;aspect-ratio:1.55;overflow:hidden;border:1px solid var(--border);border-radius:.45rem;background:var(--background-alt)}.entry-meta{display:flex;align-items:center;gap:.48rem;color:var(--muted-foreground);font: .58rem var(--font-mono);text-transform:uppercase;margin:0 0 .42rem}.entry-meta>span{color:var(--accent)}.entry-meta i{font-style:normal;opacity:.55}.entry-meta :global(div){gap:0}.entry-meta :global(svg){display:none}.entry-meta :global(time){font:inherit}.entry-main h3{font-size:1rem;font-weight:680;letter-spacing:-.02em;line-height:1.45;margin:0}.entry-main h3 a{color:var(--foreground)}.entry-description{font-size:.77rem;line-height:1.7;color:var(--muted-foreground);margin:.28rem 0 0}.entry-arrow{color:var(--accent);font-size:1rem;padding-top:.1rem}.all-posts-row{display:flex;justify-content:center;padding:1.6rem 0 0}.all-posts-button{border-radius:.45rem!important}
-  :global(body:has(main[data-layout="index"]) header){background:color-mix(in srgb,var(--background) 88%,transparent);border-color:var(--border)}:global(body:has(main[data-layout="index"]) header .app-layout),:global(body:has(main[data-layout="index"]) footer .app-layout){max-width:67rem}:global(body:has(main[data-layout="index"]) footer){margin-top:1rem}
-  :global(html[data-theme="dark"] main[data-layout="index"]){--accent:#5be1bd;--accent-hover:#8af2d5;--accent-2:#5be1bd;--accent-foreground:#07141e;--border:#263448;--background:#0c1422;--background-alt:#111e2e;--surface:#111e2e;--foreground:#e8eef5;--muted-foreground:#9aa9ba;--muted:#18273a}
-  :global(html[data-theme="dark"] body:has(main[data-layout="index"]) header),:global(html[data-theme="dark"] body:has(main[data-layout="index"]) footer){background:#0c1422;color:#e8eef5;border-color:#263448}
-  @media(max-width:760px){.journal-layout{padding-inline:1.2rem}.journal-hero{grid-template-columns:1fr;gap:2rem;padding:3.4rem 0 3rem}.hero-copy h1{max-width:15em}.signal-panel{min-height:250px}.signal-map{height:165px}.featured-card{grid-template-columns:1fr}.featured-image{min-height:210px}.featured-copy{padding:1.35rem 1.4rem}.featured-section{padding-bottom:2.6rem}.more-featured{margin-top:-1.4rem;padding-bottom:2.6rem}}
-  @media(max-width:520px){.journal-layout{padding-inline:1rem}.journal-hero{padding-top:2.7rem}.hero-copy h1{font-size:2.55rem}.hero-lead{font-size:.92rem}.signal-panel{min-height:230px}.signal-map{height:150px}.node-net{left:7%}.node-code{right:7%}.node-life{right:13%}.featured-copy h3{font-size:1.25rem}.featured-image{min-height:180px}.more-featured{grid-template-columns:1fr}.mini-feature{grid-template-columns:58px auto 1fr auto;gap:.55rem;padding:.55rem}.entry-row{grid-template-columns:24px 82px 1fr 16px;gap:.55rem;padding:.8rem .1rem}.entry-thumbnail{aspect-ratio:1.35}.entry-main h3{font-size:.9rem}.entry-description{font-size:.7rem}.entry-meta{font-size:.49rem;gap:.3rem}.section-heading h2{font-size:1.35rem}.section-aside{font-size:.5rem}.article-bottom{align-items:flex-end}.article-bottom :global(div){gap:.2rem}}
+  .journal-layout {
+    max-width: 64rem;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 1.5rem 2rem;
+    color: var(--foreground);
+  }
+  .journal-hero {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 3rem;
+    align-items: center;
+    padding: 4.6rem 0 4rem;
+  }
+  .eyebrow,
+  .section-code,
+  .section-aside,
+  .panel-head,
+  .panel-foot,
+  .article-category,
+  .read-link,
+  .image-index,
+  .mini-index {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.13em;
+  }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--accent);
+    font-weight: 650;
+    margin: 0 0 1.3rem;
+  }
+  .status-dot,
+  .panel-live i {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--accent-2);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent-2), transparent 25%);
+  }
+  .hero-copy h1 {
+    max-width: 11em;
+    font-size: clamp(2.45rem, 5vw, 4rem);
+    line-height: 1.12;
+    letter-spacing: -0.055em;
+    font-weight: 760;
+    margin: 0;
+  }
+  .hero-lead {
+    max-width: 35rem;
+    margin: 1.25rem 0 0;
+    color: var(--muted-foreground);
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+  .hero-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.7rem;
+  }
+  .primary-action {
+    background: #12283c !important;
+    color: #fff !important;
+    border-color: #12283c !important;
+    border-radius: 0.45rem !important;
+    padding: 0.65rem 1rem !important;
+  }
+  .dark .primary-action {
+    background: #5be1bd !important;
+    color: #07141e !important;
+    border-color: #5be1bd !important;
+  }
+  .rss-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--muted-foreground);
+    font-size: 0.85rem;
+  }
+  .rss-action:hover {
+    color: var(--accent);
+  }
+  .social-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 1.6rem;
+    color: var(--muted-foreground);
+    font: 0.62rem var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+  .social-row :global(a) {
+    opacity: 0.8;
+  }
+  .social-row :global(a:hover) {
+    opacity: 1;
+  }
+  .signal-panel {
+    --panel: #0c1727;
+    --panel-line: #263d50;
+    --panel-muted: #9bafc1;
+    position: relative;
+    overflow: hidden;
+    min-height: 275px;
+    border: 1px solid var(--panel-line);
+    border-radius: 0.75rem;
+    background:
+      radial-gradient(ellipse at 52% 47%, #19384a 0, transparent 56%),
+      var(--panel);
+    color: #e7f2f4;
+    box-shadow: 0 22px 55px #0817281a;
+  }
+  .panel-head,
+  .panel-foot {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.15rem;
+    color: var(--panel-muted);
+    font-size: 0.58rem;
+  }
+  .panel-head {
+    border-bottom: 1px solid #ffffff12;
+  }
+  .panel-live {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #5be1bd;
+  }
+  .panel-live i {
+    width: 0.35rem;
+    height: 0.35rem;
+  }
+  .signal-map {
+    position: relative;
+    height: 190px;
+    overflow: hidden;
+  }
+  .signal-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(#8ab1c412 1px, transparent 1px),
+      linear-gradient(90deg, #8ab1c412 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: linear-gradient(transparent, #000 15%, #000 85%, transparent);
+  }
+  .signal-node {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border: 1px solid #4d8c91;
+    border-radius: 12px;
+    background: #102537;
+    box-shadow: 0 0 24px #5be1bd12;
+    color: #5be1bd;
+  }
+  .signal-node b {
+    font: 700 0.75rem var(--font-mono);
+  }
+  .signal-node small {
+    font: 0.43rem var(--font-mono);
+    letter-spacing: 0.08em;
+    color: #b3c8d2;
+  }
+  .node-main {
+    left: calc(50% - 27px);
+    top: calc(50% - 27px);
+    width: 62px;
+    height: 62px;
+    border-color: #5be1bd;
+    border-radius: 50%;
+    background: #123442;
+    box-shadow:
+      0 0 0 8px #5be1bd13,
+      0 0 35px #5be1bd24;
+  }
+  .node-main b {
+    font-size: 1.2rem;
+  }
+  .node-net {
+    left: 15%;
+    top: 17%;
+  }
+  .node-code {
+    right: 14%;
+    top: 18%;
+  }
+  .node-life {
+    right: 22%;
+    bottom: 5%;
+  }
+  .trace {
+    position: absolute;
+    height: 1px;
+    background: #5be1bd73;
+    transform-origin: left center;
+  }
+  .trace-a {
+    left: 25%;
+    top: 36%;
+    width: 28%;
+    transform: rotate(20deg);
+  }
+  .trace-b {
+    left: 51%;
+    top: 48%;
+    width: 26%;
+    transform: rotate(-25deg);
+  }
+  .trace-c {
+    left: 53%;
+    top: 53%;
+    width: 26%;
+    transform: rotate(38deg);
+  }
+  .pulse {
+    position: absolute;
+    z-index: 1;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #5be1bd;
+    box-shadow: 0 0 9px 3px #5be1bd55;
+  }
+  .pulse-a {
+    left: 34%;
+    top: 40%;
+  }
+  .pulse-b {
+    right: 31%;
+    top: 35%;
+  }
+  .pulse-c {
+    right: 34%;
+    bottom: 17%;
+  }
+  .map-coord {
+    position: absolute;
+    color: #7597a8;
+    font: 0.5rem var(--font-mono);
+    letter-spacing: 0.08em;
+  }
+  .coord-a {
+    left: 1rem;
+    bottom: 0.45rem;
+  }
+  .coord-b {
+    right: 1rem;
+    bottom: 0.45rem;
+  }
+  .panel-foot {
+    border-top: 1px solid #ffffff12;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: 0.53rem;
+    letter-spacing: 0.11em;
+  }
+  .section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin-bottom: 1.15rem;
+  }
+  .section-code {
+    color: var(--accent);
+    font-size: 0.57rem;
+    margin: 0 0 0.42rem;
+  }
+  .section-heading h2 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+    font-weight: 720;
+    margin: 0;
+  }
+  .section-aside {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--muted-foreground);
+    font-size: 0.57rem;
+  }
+  .section-aside span {
+    color: var(--accent);
+  }
+  .featured-section {
+    padding-bottom: 3.2rem;
+  }
+  .featured-card {
+    display: grid;
+    grid-template-columns: 0.95fr 1.05fr;
+    min-height: 230px;
+    border: 1px solid var(--border);
+    border-radius: 0.7rem;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: var(--card-shadow);
+  }
+  .featured-image {
+    position: relative;
+    display: block;
+    min-height: 225px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #173148, #14283c 58%, #1b4149);
+  }
+  .featured-image :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .featured-card:hover .featured-image :global(img) {
+    transform: scale(1.04);
+  }
+  .image-index {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    padding: 0.42rem 0.55rem;
+    border: 1px solid #ffffff55;
+    border-radius: 0.25rem;
+    background: #0c1c2aa8;
+    color: #d9e9ea;
+    font-size: 0.52rem;
+  }
+  .image-index b {
+    color: #5be1bd;
+    margin-left: 0.45rem;
+  }
+  .feature-art {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(
+      circle at center,
+      #224657 0,
+      #142b3d 42%,
+      #102032 75%
+    );
+  }
+  .art-ring {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 230px;
+    height: 150px;
+    border: 1px solid #69d9c355;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+  }
+  .ring-two {
+    width: 270px;
+    height: 190px;
+    transform: translate(-50%, -50%) rotate(28deg);
+    border-color: #8bb7d044;
+  }
+  .art-core {
+    display: grid;
+    place-items: center;
+    width: 74px;
+    height: 74px;
+    border: 1px solid #5be1bd;
+    border-radius: 50%;
+    background: #173c4a;
+    color: #5be1bd;
+    font-size: 1.5rem;
+    font-weight: 800;
+    box-shadow:
+      0 0 0 12px #5be1bd12,
+      0 0 45px #5be1bd2b;
+  }
+  .art-label {
+    position: absolute;
+    bottom: 1.1rem;
+    left: 1rem;
+    color: #a3c1c6;
+    font: 0.55rem var(--font-mono);
+    letter-spacing: 0.15em;
+  }
+  .featured-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.6rem 1.8rem;
+  }
+  .article-category {
+    align-self: flex-start;
+    color: var(--accent);
+    font-size: 0.56rem;
+    text-transform: uppercase;
+    margin: 0 0 0.8rem;
+  }
+  .featured-copy h3 {
+    font-size: 1.45rem;
+    line-height: 1.35;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+  .featured-copy h3 a {
+    color: var(--foreground);
+  }
+  .featured-copy h3 a:hover,
+  .entry-main h3 a:hover {
+    color: var(--accent);
+  }
+  .article-description {
+    font-size: 0.83rem;
+    line-height: 1.75;
+    color: var(--muted-foreground);
+    margin: 0.7rem 0 1.15rem;
+  }
+  .article-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.7rem;
+    border-top: 1px solid var(--border);
+    padding-top: 0.8rem;
+  }
+  .article-bottom :global(svg) {
+    color: var(--accent);
+    width: 1rem;
+    min-width: 1rem;
+  }
+  .article-bottom :global(time) {
+    font: 0.65rem var(--font-mono);
+  }
+  .read-link {
+    white-space: nowrap;
+    color: var(--accent);
+    font-size: 0.55rem;
+    font-weight: 700;
+  }
+  .read-link span {
+    padding-left: 0.35rem;
+  }
+  .more-featured {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin-top: -2rem;
+    padding-bottom: 3rem;
+  }
+  .mini-feature {
+    display: grid;
+    grid-template-columns: 64px auto 1fr auto;
+    gap: 0.8rem;
+    align-items: center;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--surface);
+  }
+  .mini-image {
+    display: block;
+    aspect-ratio: 1.5;
+    overflow: hidden;
+    border-radius: 0.35rem;
+    background: var(--background-alt);
+  }
+  .mini-image :global(img),
+  .entry-thumbnail :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  .mini-feature:hover .mini-image :global(img),
+  .entry-thumbnail:hover :global(img) {
+    transform: scale(1.05);
+  }
+  .mini-index {
+    font-size: 0.52rem;
+    color: var(--accent);
+  }
+  .mini-title {
+    font-size: 0.85rem;
+    font-weight: 650;
+  }
+  .mini-arrow {
+    color: var(--accent);
+  }
+  .cover-placeholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    background:
+      radial-gradient(circle at 70% 25%, #5be1bd3b, transparent 35%),
+      linear-gradient(135deg, #14283c, #1c4652);
+    color: #75dfca;
+    font: 700 0.8rem var(--font-mono);
+    letter-spacing: 0.08em;
+  }
+  .latest-section {
+    padding-bottom: 1rem;
+  }
+  .entry-list {
+    border-top: 1px solid var(--border);
+  }
+  .entry-row {
+    display: grid;
+    grid-template-columns: 34px 132px 1fr 22px;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 0.4rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .entry-row:hover {
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+  }
+  .entry-index {
+    padding-top: 0.1rem;
+    color: var(--accent);
+    font: 0.68rem var(--font-mono);
+  }
+  .entry-thumbnail {
+    display: block;
+    aspect-ratio: 1.55;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 0.45rem;
+    background: var(--background-alt);
+  }
+  .entry-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.48rem;
+    color: var(--muted-foreground);
+    font: 0.58rem var(--font-mono);
+    text-transform: uppercase;
+    margin: 0 0 0.42rem;
+  }
+  .entry-meta > span {
+    color: var(--accent);
+  }
+  .entry-meta i {
+    font-style: normal;
+    opacity: 0.55;
+  }
+  .entry-meta :global(div) {
+    gap: 0;
+  }
+  .entry-meta :global(svg) {
+    display: none;
+  }
+  .entry-meta :global(time) {
+    font: inherit;
+  }
+  .entry-main h3 {
+    font-size: 1rem;
+    font-weight: 680;
+    letter-spacing: -0.02em;
+    line-height: 1.45;
+    margin: 0;
+  }
+  .entry-main h3 a {
+    color: var(--foreground);
+  }
+  .entry-description {
+    font-size: 0.77rem;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+    margin: 0.28rem 0 0;
+  }
+  .entry-arrow {
+    color: var(--accent);
+    font-size: 1rem;
+    padding-top: 0.1rem;
+  }
+  .all-posts-row {
+    display: flex;
+    justify-content: center;
+    padding: 1.6rem 0 0;
+  }
+  .all-posts-button {
+    border-radius: 0.45rem !important;
+  }
+  :global(body:has(main[data-layout="index"]) header) {
+    background: color-mix(in srgb, var(--background) 88%, transparent);
+    border-color: var(--border);
+  }
+  :global(body:has(main[data-layout="index"]) header .app-layout),
+  :global(body:has(main[data-layout="index"]) footer .app-layout) {
+    max-width: 67rem;
+  }
+  :global(body:has(main[data-layout="index"]) footer) {
+    margin-top: 1rem;
+  }
+  :global(html[data-theme="dark"] main[data-layout="index"]) {
+    --accent: #5be1bd;
+    --accent-hover: #8af2d5;
+    --accent-2: #5be1bd;
+    --accent-foreground: #07141e;
+    --border: #263448;
+    --background: #0c1422;
+    --background-alt: #111e2e;
+    --surface: #111e2e;
+    --foreground: #e8eef5;
+    --muted-foreground: #9aa9ba;
+    --muted: #18273a;
+  }
+  :global(html[data-theme="dark"] body:has(main[data-layout="index"]) header),
+  :global(html[data-theme="dark"] body:has(main[data-layout="index"]) footer) {
+    background: #0c1422;
+    color: #e8eef5;
+    border-color: #263448;
+  }
+  @media (max-width: 760px) {
+    .journal-layout {
+      padding-inline: 1.2rem;
+    }
+    .journal-hero {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 3.4rem 0 3rem;
+    }
+    .hero-copy h1 {
+      max-width: 15em;
+    }
+    .signal-panel {
+      min-height: 250px;
+    }
+    .signal-map {
+      height: 165px;
+    }
+    .featured-card {
+      grid-template-columns: 1fr;
+    }
+    .featured-image {
+      min-height: 210px;
+    }
+    .featured-copy {
+      padding: 1.35rem 1.4rem;
+    }
+    .featured-section {
+      padding-bottom: 2.6rem;
+    }
+    .more-featured {
+      margin-top: -1.4rem;
+      padding-bottom: 2.6rem;
+    }
+  }
+  @media (max-width: 520px) {
+    .journal-layout {
+      padding-inline: 1rem;
+    }
+    .journal-hero {
+      padding-top: 2.7rem;
+    }
+    .hero-copy h1 {
+      font-size: 2.55rem;
+    }
+    .hero-lead {
+      font-size: 0.92rem;
+    }
+    .signal-panel {
+      min-height: 230px;
+    }
+    .signal-map {
+      height: 150px;
+    }
+    .node-net {
+      left: 7%;
+    }
+    .node-code {
+      right: 7%;
+    }
+    .node-life {
+      right: 13%;
+    }
+    .featured-copy h3 {
+      font-size: 1.25rem;
+    }
+    .featured-image {
+      min-height: 180px;
+    }
+    .more-featured {
+      grid-template-columns: 1fr;
+    }
+    .mini-feature {
+      grid-template-columns: 58px auto 1fr auto;
+      gap: 0.55rem;
+      padding: 0.55rem;
+    }
+    .entry-row {
+      grid-template-columns: 24px 82px 1fr 16px;
+      gap: 0.55rem;
+      padding: 0.8rem 0.1rem;
+    }
+    .entry-thumbnail {
+      aspect-ratio: 1.35;
+    }
+    .entry-main h3 {
+      font-size: 0.9rem;
+    }
+    .entry-description {
+      font-size: 0.7rem;
+    }
+    .entry-meta {
+      font-size: 0.49rem;
+      gap: 0.3rem;
+    }
+    .section-heading h2 {
+      font-size: 1.35rem;
+    }
+    .section-aside {
+      font-size: 0.5rem;
+    }
+    .article-bottom {
+      align-items: flex-end;
+    }
+    .article-bottom :global(div) {
+      gap: 0.2rem;
+    }
+  }
 </style>
