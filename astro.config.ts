@@ -119,6 +119,11 @@ export default defineConfig({
         context: "client",
         optional: true,
       }),
+      PUBLIC_BING_SITE_VERIFICATION: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
     },
   },
   experimental: {
