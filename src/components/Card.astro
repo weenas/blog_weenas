@@ -1,6 +1,5 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { Image } from "astro:assets";
 import WeenasLogo from "@/assets/icons/WeenasLogo.svg";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { toTransitionName } from "@/utils/toTransitionName";
@@ -43,14 +42,13 @@ const { title, description, image, ...props } = data;
   >
     {
       image ? (
-        <Image
+        <img
           src={image}
           alt=""
-          width={160}
-          height={100}
-          fit="cover"
-          layout="fixed"
-          sizes="(min-width: 640px) 160px, 96px"
+          width="160"
+          height="100"
+          loading="lazy"
+          decoding="async"
           class="size-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       ) : (
