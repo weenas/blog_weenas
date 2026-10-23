@@ -36,9 +36,9 @@ pubDatetime: 2026-10-23
 
 虚拟 OpenWrt 使用家庭 LAN 上的固定地址 `10.1.1.2`，主路由地址是 `10.1.1.1`。地址应根据自己的网络调整，并确保没有被其他设备占用。旁路由的默认网关指向主路由。
 
-旁路由接入已有 LAN 时，DHCP 服务必须关闭，避免它和主路由同时给设备分配地址。虚拟机使用现有外部虚拟交换机即可；测试阶段不需要改主路由的默认网关，也不需要把整个家庭网络切到旁路由。
+旁路由接入已有 LAN 时，DHCP 服务必须关闭，避免它和主路由同时给设备分配地址。IPv6 也一样：旁路由不应发送路由通告（RA）或提供 DHCPv6，否则设备会把它当成 IPv6 路由器和 DNS。OpenWrt 里把 LAN 的 DHCP 设为“忽略此接口”后，可以用 `ubus call dhcp ipv6ra` 确认 odhcpd 没有在任何接口上发送 RA。虚拟机使用现有外部虚拟交换机即可；测试阶段不需要改主路由的默认网关，也不需要把整个家庭网络切到旁路由。
 
-旁路由只有一个网口接在 LAN 里（常说的“单臂”），还要注意回程路径。经过 sing-box TUN 的连接由 sing-box 重新发起，回包会回到旁路由，不受影响；但被排除在 TUN 之外、由内核直接转发的流量（例如下文 `bypass-tun` 排除的网段），去程经过旁路由，回程却会由主路由直接发回终端。这种非对称路由可能被旁路由的防火墙当成无效连接丢弃。常见做法是在旁路由的 LAN 防火墙区域开启 IP 动态伪装（masquerading），让转发出去的流量也以旁路由的地址返回。
+旁路由只有一个网口接在 LAN 里（常说的“单臂”），还要注意回程路径。经过 sing-box TUN 的连接由 sing-box 重新发起，回包会回到旁路由，不受影响；但被排除在 TUN 之外、由内核直接转发的流量，去程经过旁路由，回程却可能由主路由直接发回终端，这种非对称路由会被旁路由的防火墙当成无效连接丢弃。我的配置里排除的都是局域网和保留地址段，再加上 VPS 自己的地址（避免隧道流量再次进入 TUN）；局域网设备访问这些私有地址时本来就不经过网关，所以没有遇到这个问题，LAN 防火墙区域也没有开启动态伪装。如果你要把公网地址段排除在 TUN 之外，就需要在旁路由的 LAN 区域开启 IP 动态伪装（masquerading），让转发出去的流量以旁路由的地址返回。
 
 先在一台测试设备上手动设置：
 
@@ -53,24 +53,33 @@ pubDatetime: 2026-10-23
 
 规则顺序很重要。sing-box 先嗅探连接、劫持经过 TUN 的 DNS 请求，再按以下顺序匹配：一般直连例外、较早的代理规则、广告拦截、较晚的代理规则、中国域名和 IP 直连；都没有匹配时，默认走代理。百度直连、X 走代理的测试结果符合这套分流目标。
 
-下面是按这个顺序组织的精简配置，用来说明各部分的关系，不是可以直接使用的完整配置。字段以所装 sing-box 版本的[官方文档](https://sing-box.sagernet.org/zh/configuration/)为准，服务器地址、密码等用占位符代替：
+下面是我的配置的精简版，去掉了节点地址、密码和完整的排除地址列表，用来说明各部分的关系。字段以所装 sing-box 版本的[官方文档](https://sing-box.sagernet.org/zh/configuration/)为准：
 
 ```json
 {
   "dns": {
     "servers": [
-      { "type": "udp", "tag": "dns-direct", "server": "223.5.5.5" },
       {
         "type": "https",
-        "tag": "dns-remote",
+        "tag": "cloudflare-doh",
         "server": "1.1.1.1",
+        "tls": { "enabled": true, "server_name": "cloudflare-dns.com" },
         "detour": "proxy"
+      },
+      {
+        "type": "https",
+        "tag": "china-doh",
+        "server": "223.5.5.5",
+        "tls": { "enabled": true, "server_name": "dns.alidns.com" }
       }
     ],
     "rules": [
-      { "rule_set": ["sr-cn-domains"], "server": "dns-direct" }
+      { "rule_set": ["sr-direct-general"], "server": "china-doh" },
+      { "rule_set": ["sr-proxy-early"], "server": "cloudflare-doh" },
+      { "rule_set": ["sr-proxy-late"], "server": "cloudflare-doh" },
+      { "rule_set": ["sr-cn-domains"], "server": "china-doh" }
     ],
-    "final": "dns-remote",
+    "final": "cloudflare-doh",
     "strategy": "ipv4_only"
   },
   "inbounds": [
@@ -79,7 +88,14 @@ pubDatetime: 2026-10-23
       "tag": "tun-in",
       "address": ["172.19.0.1/30"],
       "auto_route": true,
-      "auto_redirect": true
+      "auto_redirect": true,
+      "strict_route": true,
+      "route_exclude_address": [
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16",
+        "<VPS 地址>/32"
+      ]
     }
   ],
   "outbounds": [
@@ -95,9 +111,8 @@ pubDatetime: 2026-10-23
   ],
   "route": {
     "rules": [
+      { "port": 53, "action": "hijack-dns" },
       { "action": "sniff" },
-      { "protocol": "dns", "action": "hijack-dns" },
-      { "ip_is_private": true, "outbound": "direct" },
       { "rule_set": ["sr-direct-general"], "outbound": "direct" },
       { "rule_set": ["sr-proxy-early"], "outbound": "proxy" },
       { "rule_set": ["sr-reject"], "action": "reject" },
@@ -109,25 +124,30 @@ pubDatetime: 2026-10-23
         "type": "local",
         "tag": "sr-cn-domains",
         "format": "binary",
-        "path": "/etc/sing-box/rules/<版本目录>/sr-cn-domains.srs"
+        "path": "/etc/sing-box/rules/<版本目录>/china-domains.srs"
       }
     ],
     "final": "proxy",
-    "default_domain_resolver": "dns-direct"
+    "auto_detect_interface": true,
+    "default_domain_resolver": "china-doh"
   }
 }
 ```
 
-`rule_set` 里只列出了一个规则集作为示例，其余五个写法相同。
+`rule_set` 里只列出了一个规则集作为示例，其余五个写法相同；`route_exclude_address` 实际还包含更多保留地址段。局域网流量没有写成路由规则，而是直接排除在 TUN 之外。
 
 ### DNS 由谁处理
 
-终端把 DNS 设成 `10.1.1.2` 之后，DNS 请求实际会走两条不同的路径，部署时要分清：
+终端把 DNS 设成 `10.1.1.2` 之后，一次查询会经过这几步：
 
-- **发给旁路由本身的查询**（目标就是 `10.1.1.2:53`）属于发往本机的流量，不经过 TUN，由旁路由上监听 53 端口的服务接收。OpenWrt 上这个服务通常是 dnsmasq：它负责缓存，再把查询转发给 sing-box 的 DNS 处理。dnsmasq 的上游必须指向 sing-box，否则这部分查询完全绕过了 sing-box 的 DNS 规则。
-- **发给其他 DNS 服务器的查询**（例如设备里写死了 `8.8.8.8`）会经过 TUN，被上面的 `hijack-dns` 规则截获，交给 sing-box 的 DNS 处理。
+1. 旁路由上监听 53 端口的是 dnsmasq，它先查自己的缓存（我设成 1000 条）。
+2. 缓存没有命中时，dnsmasq 转发给它配置的上游 `1.1.1.1:53`（不读取系统的 resolv 文件）。
+3. 这个由旁路由自己发出的查询同样会被 TUN 接管：`auto_route` 也覆盖本机流量，`1.1.1.1` 又不在排除列表里。它在 TUN 里命中第一条 `port: 53` 的 `hijack-dns` 规则，交给 sing-box 的 DNS 处理，实际并不会直接发到 `1.1.1.1:53`。
+4. sing-box 按 DNS 规则选择上游：直连规则和中国域名用阿里 DoH，代理规则和其他域名用经过代理出站的 Cloudflare DoH；所有结果只返回 IPv4 地址（`strategy: ipv4_only`）。
 
-可以用 `netstat -lnup | grep :53` 确认 53 端口由哪个进程监听，再检查 dnsmasq 的上游设置。给 dnsmasq 设置适当的缓存，可以减少相同域名反复向上游查询的次数；但缓存只能减少重复查询和解析等待，不会提高 VPS 的带宽，也不能修复上游 DNS 返回错误地址的问题。
+如果终端里写死了别的 DNS 服务器（例如 `8.8.8.8`），这些查询经过 TUN 时也会被同一条 `hijack-dns` 规则截获。用 `nslookup www.google.com 10.1.1.2` 查询后，sing-box 日志里能看到对应的 `dns: exchanged` 记录，可以确认这条链路生效。
+
+dnsmasq 的缓存可以减少相同域名反复向上游查询的次数；但缓存只能减少重复查询和解析等待，不会提高 VPS 的带宽，也不能修复上游 DNS 返回错误地址的问题。
 
 ### 规则从哪里来，怎样接入
 
@@ -148,7 +168,7 @@ sing-box 原生规则集使用自己的 JSON 源格式，也可以编译成 `.sr
 
 ### 每周更新与回滚
 
-规则项目每天北京时间 08:00 构建发布；我用每周更新，减少不必要的下载和服务重启。定时任务写在 `/etc/crontabs/root`：
+规则项目每天 UTC 23:00（北京时间 07:00）自动构建发布；我用每周更新，减少不必要的下载和服务重启。定时任务写在 `/etc/crontabs/root`：
 
 ```text
 0 1 * * 0 /root/update-shadowrocket-rules.sh >/dev/null 2>&1
@@ -158,18 +178,19 @@ sing-box 原生规则集使用自己的 JSON 源格式，也可以编译成 `.sr
 
 - Shadowrocket 主规则：[`sr_top500_banlist_ad.conf`](https://johnshall.github.io/Shadowrocket-ADBlock-Rules-Forever/sr_top500_banlist_ad.conf)
 - Apple News 外部规则：[`AppleNews.list`](https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/AppleNews/AppleNews.list)
-- 中国域名和 IP 的 sing-box 二进制规则集：SagerNet 的 `sing-geosite` 与 `sing-geoip` 项目
+- 中国域名和 IP 的 sing-box 二进制规则集：SagerNet 的 `sing-geosite`（`geosite-geolocation-cn.srs`）与 `sing-geoip`（`geoip-cn.srs`）项目
 
 每轮更新的流程是：
 
-1. 用互斥锁防止更新任务并发运行，在 `/tmp` 建立临时工作目录；所有新下载先写到临时目录，不覆盖正在使用的规则。
-2. 检查下载结果、文件大小和必需区段；解析 Shadowrocket 主文件及 Apple News 列表，下载中国域名和 IP `.srs` 文件。
-3. 对支持的规则进行计数和格式校验；未知语法、外部列表不可用或数量低于安全阈值时，记录错误并退出。
-4. 编译 `direct`、`proxy-early`、`reject`、`proxy-late` 四个规则集，生成候选 sing-box 配置，并用 `sing-box check` 校验这份候选配置；校验不通过就退出，正在运行的配置不受影响。
-5. 把新规则的摘要与上一次记录比较；规则没有变化时，到此结束，不替换文件也不重启服务。
-6. 以 UTC 时间戳建立版本目录；先把当前配置和旧规则复制到 `/root/sing-box-rules-backups/<时间戳>/`，再移动新规则并原子替换配置文件。
-7. 重启 sing-box 并确认进程仍在运行。重启失败或进程退出时，脚本会恢复备份配置并再次尝试启动旧配置。
-8. 记录本次的源文件摘要和更新结果。`/etc/sing-box/rules/` 保留最近四个编译版本供回滚。
+1. 用锁文件防止更新任务并发运行，在 `/tmp` 建立临时工作目录；所有新下载先写到临时目录，不覆盖正在使用的规则。
+2. 下载主规则、Apple News 列表和两个中国规则集，检查文件大小（主规则至少 1 MB，中国规则集至少 10 KB）和 `[Rule]` 区段。
+3. 解析 Shadowrocket 主文件及 Apple News 列表，对支持的规则进行计数和格式校验；遇到未知语法或意外的外部规则集时，记录错误并退出。
+4. 编译 `direct`、`proxy-early`、`reject`、`proxy-late` 四个规则集。
+5. 计算所有源文件和转换脚本版本的 SHA-256 摘要，与上一次记录比较；没有变化（且当前配置结构符合预期）时，到此结束，不替换文件也不重启服务。
+6. 用新规则集生成候选 sing-box 配置，并用 `sing-box check` 校验；不通过就退出，正在运行的配置不受影响。
+7. 先把当前配置和旧规则备份到 `/root/sing-box-rules-backups/<UTC 时间戳>/`，再把新规则移到同名的版本目录，生成指向这个目录的最终配置并再校验一次，然后原子替换 `/etc/sing-box/config.json`。
+8. 重启 sing-box，3 秒后确认进程仍在运行。重启失败或进程退出时，恢复备份的配置并再次启动。
+9. 写入新的摘要，记录更新结果，并删除旧的版本目录，`/etc/sing-box/rules/` 只保留最近四个版本供回滚。
 
 sing-box 的远程规则集机制可以按 `update_interval` 定期拉取原生格式规则集；Shadowrocket 配置不属于这种原生格式，所以采用 OpenWrt 本地脚本定时下载、转换、校验和替换。
 
@@ -179,7 +200,7 @@ sing-box 的远程规则集机制可以按 `update_interval` 定期拉取原生�
 
 - `sing-box check -c /etc/sing-box/config.json` 应该通过，sing-box 进程正在运行。
 - `/etc/sing-box/rules/` 下最新的版本目录里，应该有四个转换后的规则集，以及中国域名和 IP 规则集；`/root/sing-box-rules-backups/` 下有对应时间戳的备份。
-- 等第一次定时任务运行之后，用 `logread | grep sr-rules-update` 查看脚本的执行记录。只看到脚本和 cron 条目存在，并不能说明定时任务已经成功跑过；要以日志为准，再分别验证直连、代理和拦截效果。
+- 脚本用 `logger -t sr-rules-update` 记录结果，可以用 `logread | grep sr-rules-update` 查看。不过 OpenWrt 的系统日志是内存里的环形缓冲区，sing-box 在 `info` 级别下日志很多，我的旁路由上缓冲区只能保留十几分钟的记录，每周一次的更新日志很快就会被冲掉。想留下更新记录，可以把 sing-box 的日志级别调到 `warn`，或者让脚本把结果另外写进一个文件。
 
 ## DNS 与 IPv6 的一个实际问题
 
@@ -190,7 +211,7 @@ sing-box 的远程规则集机制可以按 `update_interval` 定期拉取原生�
 需要注意两点：
 
 - **这是全网范围的改动。** DHCPv6 和路由通告是主路由发给所有设备的，停掉 IPv6 DNS 通告会影响家里每一台设备，而不只是测试设备。其他设备仍能通过 IPv4 的 DHCP 拿到主路由下发的 DNS，日常上网通常不受影响，但调整前要清楚影响范围，并选择方便回退的时间。
-- **IPv6 流量本身仍然绕过旁路由。** 主路由保留了 IPv6 默认路由，终端的 IPv6 连接会直接经主路由出去，不经过旁路由，也就不受分流规则控制。这个方案能成立，前提是旁路由的 DNS 只给终端返回 IPv4 地址（例如 sing-box DNS 设置 `"strategy": "ipv4_only"`），终端就只会通过 IPv4 访问这些网站。如果 DNS 返回了 AAAA 记录，支持 IPv6 的应用会直接用 IPv6 访问，代理规则对它完全无效。
+- **IPv6 流量本身仍然绕过旁路由。** 主路由保留了 IPv6 默认路由，终端的 IPv6 连接会直接经主路由出去，不经过旁路由，也就不受分流规则控制。这个方案能成立，是因为旁路由的 sing-box DNS 设置了 `"strategy": "ipv4_only"`，只给终端返回 IPv4 地址，终端就只会通过 IPv4 访问这些网站。如果 DNS 返回了 AAAA 记录，支持 IPv6 的应用会直接用 IPv6 访问，代理规则对它完全无效。
 
 这次调整影响的是终端通过路由器自动获得的 DNS 服务器，不是关闭 IPv6。局域网设备仍可使用 IPv6 地址互相访问，互联网 IPv6 路由也仍然存在。不过，设备在手工设置里保留的 DNS、浏览器的加密 DNS，或应用自带的 DoH/DoT 解析，仍可能绕过 DHCP/RA 通告的 DNS，因此出现解析差异时需要分别检查这些来源。
 
@@ -213,7 +234,7 @@ sing-box 的远程规则集机制可以按 `update_interval` 定期拉取原生�
 
 如果 VPS 中断，规则判定为代理的流量无法访问；规则判定为直连的流量仍可经主路由上网。由于未匹配任何规则的流量默认走代理，VPS 中断时受影响的不只是明确列为代理的网站，还包括所有没被规则覆盖的网站，其中可能有不在中国域名列表里的国内小站。如果更看重 VPS 故障时的可用性，可以把默认策略改回直连，代价是部分未收录的境外网站需要手动补充规则。
 
-DNS 是否也受影响，则取决于旁路由使用的解析上游：若 DNS 查询也依赖 VPS（例如上面示例里经代理出站的 `dns-remote`），节点中断时新域名可能解析失败。因此应准备不依赖代理隧道的 DNS 回退，并实际断开代理测试国内域名解析，而不是只假设直连规则会自动解决 DNS 故障。
+DNS 是否也受影响，则取决于旁路由使用的解析上游：我的配置里，代理规则和未匹配的域名都用经过代理出站的 `cloudflare-doh` 解析，节点中断时这些新域名会解析失败；中国域名和直连规则用阿里 DoH，不受影响。因此要实际断开代理测试国内域名解析，而不是只假设直连规则会自动解决 DNS 故障。
 
 在扩大到全家设备之前，还要准备好配置备份和恢复步骤，记录 OpenWrt 版本、sing-box 版本、网络地址、DNS 上游和规则来源。更新前保存当前可用配置；更新后先做配置校验和小范围访问测试。任何全网级别的网关、DHCP 或 IPv6 DNS 调整，都应安排在可以立即回退的时候进行。
 
