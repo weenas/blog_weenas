@@ -1,6 +1,6 @@
 ---
 title: Multi-Level Interrupts in Zephyr
-image: https://photo.weenas.com/bmUTlD.jpg
+image: https://img.weenas.com/bmUTlD.jpg
 date: 2019-01-17
 tags:
   - zephyr

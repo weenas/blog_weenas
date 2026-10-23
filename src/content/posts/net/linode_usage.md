@@ -1,6 +1,6 @@
 ---
 title: linode 使用记
-image: https://photo.weenas.com/sUN8UI.jpg
+image: https://img.weenas.com/sUN8UI.jpg
 date: 2016-12-21 14:48:15
 tags:
   - network
@@ -22,7 +22,7 @@ pubDatetime: 2016-12-21
 
 被攻击后的症状是疯狂的往外发数据，从下面的图表可以看出有三天的时间几乎是满负荷的发送（注意看左边的单位），导致我2TB的流量在两天不到就被消耗殆尽。其实在使用80%流量时系统会自动发送邮件提醒，当时正值国庆假期，收到邮件时没有引起重视。后来Linode客服也发现了异常，主动创建了一个Ticket问我是怎么回事，我才发现流量已经超了400多G。。
 
-![linode_data_traffic.jpg](https://photo.weenas.com/MYs6OE.jpg)
+![linode_data_traffic.jpg](https://img.weenas.com/MYs6OE.jpg)
 
 赶紧登录上去使用nethogs查看网络使用情况，原来是一个名叫mysql515的进程在以80Mbps左右的速度往外发送数据，立即kill掉再想办法清理。
 

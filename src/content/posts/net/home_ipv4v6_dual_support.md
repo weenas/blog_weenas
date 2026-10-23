@@ -1,7 +1,7 @@
 ---
 title: 如何实现双栈访问家庭网络
 date: 2025-11-24T18:53:13+08:00
-image: https://photo.weenas.com/cT0W3h.png
+image: https://img.weenas.com/cT0W3h.png
 tags:
   - network
 keywords:
@@ -34,7 +34,7 @@ IPv4数据转发的具体实现方式可以分为两种情况
 
 对于第一种情况，假如VPS同时支持IPv4和IPv6，实现相对容易，只需借助Socat的IPv4到IPv6的端口转发功能，如下图所示：
 
-![ipv4_ipv6_dual.drawio.png](https://photo.weenas.com/H3wT31.png)
+![ipv4_ipv6_dual.drawio.png](https://img.weenas.com/H3wT31.png)
 
 VPS通过Socat监听某个IPv4端口，接收到请求后通过IPv6转发给家庭网关，从而实现通过IPv4间接访问家庭网络的目的。
 
@@ -52,7 +52,7 @@ Socat能够支持ipv4和ipv6的任意源和目的端口转换，实际上我们�
 
 这里要引入第二个工具：`FRP`，这是一个开源软件，采用C/S架构。他的原理其实比较简单，既然VPS不能直接访问家庭网关，但是VPS有公网IPv4地址，那就先在VPS上启动一个服务端`FRPS`，然后在家庭网关上启动客户端`FRPC`并和FRPS建立TCP连接。这时FRPS和FRPC可以进行双向通信，当然就可以实现把公网上的IPv4请求数据转发给家庭网关的目的。
 
-![ipv4_ipv6_dual_FRP.png](https://photo.weenas.com/cT0W3h.png)
+![ipv4_ipv6_dual_FRP.png](https://img.weenas.com/cT0W3h.png)
 
 FRP官方称这个功能为反向代理，也可以理解为在FRPS和FPRC之间建立隧道，通过隧道实现数据转发。
 

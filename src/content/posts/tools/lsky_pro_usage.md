@@ -1,6 +1,6 @@
 ---
 title: 如何使用LSKY创建私有图床
-image: https://photo.weenas.com/ngSPRO.png
+image: https://img.weenas.com/ngSPRO.png
 date: 2023-06-04
 tags:
   - Docker
@@ -13,7 +13,7 @@ keywords:
 pubDatetime: 2023-06-04
 ---
 
-![1685872464798.png](https://photo.weenas.com/ngSPRO.png)
+![1685872464798.png](https://img.weenas.com/ngSPRO.png)
 
 当前免费图床越来越少，而且图片大小，上传数量，总空间大小上有很多限制。能不能基于群晖或者自己的服务器建一个图床，通过家庭电信提供外部访问呢。这样的话在空间大小上几乎没有限制，而且上传带宽也能达到50Mbps，相比一些收费图床的速度更快。
 
@@ -35,8 +35,8 @@ docker run -d --name lsky-pro \
 	halcyonazure/lsky-pro-docker:latest
 ```
 此时通过浏览器访问8090端口进入安装界面，选择SQLite并输入初始管理帐号和密码
-![1685871445750.png](https://photo.weenas.com/4vwYAj.png)
+![1685871445750.png](https://img.weenas.com/4vwYAj.png)
 安装完成后会自动跳转到主页面，此时可以通过管理员帐号登录进行相关设置，比如配置最大文件大小，上传图片数量上限和域名等等。
 再加上NAT端口映射和反向代理后就可以通过公网访问和上传图片了
-![1685872150099.png](https://photo.weenas.com/YFWfGK.png)
+![1685872150099.png](https://img.weenas.com/YFWfGK.png)
 上传图片后，和商业图床文件一样，每张图片都有包括HTML、Markdown等链接，复制需要的链接到文档即可显示此图片。

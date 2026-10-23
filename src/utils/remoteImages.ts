@@ -1,7 +1,11 @@
 import { imageMetadata } from "astro/assets/utils";
 
 /** Hosts whose images Astro may fetch and optimize (used in astro.config). */
-export const IMAGE_DOMAINS = ["photo.weenas.com", "cmake.org"];
+export const IMAGE_DOMAINS = [
+  "photo.weenas.com",
+  "img.weenas.com",
+  "cmake.org",
+];
 
 const ATTEMPTS = 4;
 /** Probes read only a few KB, so a plain overall timeout is fine for them. */

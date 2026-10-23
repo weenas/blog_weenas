@@ -1,6 +1,6 @@
 ---
 title: Transparent Proxy on OpenWrt
-image: https://photo.weenas.com/gtB7gP.png
+image: https://img.weenas.com/gtB7gP.png
 date: 2023-08-14T15:13:18+08:00
 description: A new approach to proxying for the home network
 keywords:

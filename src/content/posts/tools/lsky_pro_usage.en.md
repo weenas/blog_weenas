@@ -1,6 +1,6 @@
 ---
 title: Building a Private Image Host with Lsky Pro
-image: https://photo.weenas.com/ngSPRO.png
+image: https://img.weenas.com/ngSPRO.png
 date: 2023-06-04
 tags:
   - Docker
@@ -13,7 +13,7 @@ keywords:
 pubDatetime: 2023-06-04
 ---
 
-![1685872464798.png](https://photo.weenas.com/ngSPRO.png)
+![1685872464798.png](https://img.weenas.com/ngSPRO.png)
 
 Free image hosts are getting harder to find, and they come with lots of limits on image size, number of uploads and total storage. Could we build an image host on a Synology NAS or our own server and expose it through a home broadband connection? That way storage is practically unlimited, and upload bandwidth can reach 50 Mbps — faster than some paid image hosts.
 
@@ -35,8 +35,8 @@ docker run -d --name lsky-pro \
 	halcyonazure/lsky-pro-docker:latest
 ```
 Now open port 8090 in a browser to reach the installer, choose SQLite, and enter the initial admin account and password.
-![1685871445750.png](https://photo.weenas.com/4vwYAj.png)
+![1685871445750.png](https://img.weenas.com/4vwYAj.png)
 After installation it redirects to the home page. Log in with the admin account to adjust settings such as the maximum file size, upload limits and the domain name.
 Add NAT port forwarding and a reverse proxy, and you can access it and upload images over the internet.
-![1685872150099.png](https://photo.weenas.com/YFWfGK.png)
+![1685872150099.png](https://img.weenas.com/YFWfGK.png)
 After uploading, just like with a commercial image host, every image gets links in HTML, Markdown and other formats. Copy the link you need into your document to display the image.

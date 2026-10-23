@@ -1,6 +1,6 @@
 ---
 title: Kconfig 简介
-image: https://photo.weenas.com/8l3G1D.png
+image: https://img.weenas.com/8l3G1D.png
 date: 2022-06-05
 tags:
   - tools

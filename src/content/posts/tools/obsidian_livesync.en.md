@@ -1,6 +1,6 @@
 ---
 title: Real-Time Obsidian Sync Across Devices
-image: https://photo.weenas.com/WLP8JP.png
+image: https://img.weenas.com/WLP8JP.png
 date: 2023-06-04
 tags:
   - Docker
@@ -14,7 +14,7 @@ keywords:
 pubDatetime: 2023-06-04
 ---
 
-![Obsidian](https://photo.weenas.com/WLP8JP.png)
+![Obsidian](https://img.weenas.com/WLP8JP.png)
 Obsidian is a powerful Markdown note-taking app with excellent cross-platform support. It offers an official sync service, but the price isn't very friendly, so here I'll introduce a free real-time sync solution.
 
 <!--more-->
@@ -57,17 +57,17 @@ Open the Docker host's IP plus the port and a login window appears. Enter the ac
 http://10.1.1.6:5984/_utils
 ```
 
-![1685865043548.png](https://photo.weenas.com/NY0ci2.png)
+![1685865043548.png](https://img.weenas.com/NY0ci2.png)
 Here you can configure and add users and databases. For example, I added a database called `notes`, which we'll point the plugin at later.
 That completes the CouchDB setup. You can of course set up port forwarding for internet access, or a reverse proxy for HTTPS, but those are beyond the scope of this post.
 ## Self-hosted LiveSync
 [Self-hosted LiveSync](https://github.com/vrtmrz/obsidian-livesync) is a community sync plugin that uses CouchDB to achieve near-real-time sync across devices.
 
 Search for `livesync` in Obsidian's community plugins, then install and enable it.
-![1685865928574.png](https://photo.weenas.com/wjJf4x.png)
+![1685865928574.png](https://img.weenas.com/wjJf4x.png)
 Open the plugin settings and enter the CouchDB details on the Setting page. Then click `Test`; if the database connection works, you'll see `Connected to notes` in the top-right corner.
-![1685866586245.png](https://photo.weenas.com/zsEE2Q.png)
+![1685866586245.png](https://img.weenas.com/zsEE2Q.png)
 Then open the `Sync Setting` page, choose `LiveSync` and click `Apply`. The setup is done.
-![1685866745070.png](https://photo.weenas.com/fzPpis.png)
+![1685866745070.png](https://img.weenas.com/fzPpis.png)
 Repeat the same configuration in Obsidian on your other devices and you'll get the sync behavior shown in the official demo:
-![1685866069249.gif](https://photo.weenas.com/TV4Rkh.gif)
+![1685866069249.gif](https://img.weenas.com/TV4Rkh.gif)

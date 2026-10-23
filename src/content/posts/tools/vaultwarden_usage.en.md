@@ -1,6 +1,6 @@
 ---
 title: An Introduction to Vaultwarden
-image: https://photo.weenas.com/T2NDqO.png
+image: https://img.weenas.com/T2NDqO.png
 date: 2023-08-13
 tags:
   - tools
@@ -20,7 +20,7 @@ I used to rely on Chrome's built-in password manager. It's convenient for websit
 For these reasons, I recently found a new solution that solves all of the above perfectly and has far exceeded my expectations in daily use — an incredibly convenient password manager: [Bitwarden](https://bitwarden.com/)
 
 Bitwarden offers a free plan for individuals, which is plenty for everyday use; advanced features require a paid plan, priced as below. If you find it useful, consider supporting the developers.
-![](https://photo.weenas.com/N4C4Jy.png)
+![](https://img.weenas.com/N4C4Jy.png)
 
 ## Self-Hosting
 
@@ -37,23 +37,23 @@ Adjust the arguments as needed — mainly the directory for storing data and the
 ## Admin Settings
 
 Before you start, you can open the admin panel to customize some settings, for example configuring an SMTP mail server, which is needed for email sign-up, two-factor authentication, important notifications and so on. The admin panel looks like this:
-![1691935613099.png](https://photo.weenas.com/2MkyWu.png)
+![1691935613099.png](https://img.weenas.com/2MkyWu.png)
 
 ## Registering a User
 
 After configuring the admin settings, remove `admin` from the URL path to get to the user interface. Email sign-up is enabled by default. Create a personal account with your email address first; later, for security, you can disable new user registration in the admin panel.
-![1691935763502.png](https://photo.weenas.com/2MkyWu.png)
+![1691935763502.png](https://img.weenas.com/2MkyWu.png)
 
 Click Create Account and enter your email address and master password. The master password is the password for the account itself — memorize it, since it's the key to all your other passwords.
-![1691936840281.png](https://photo.weenas.com/GkgKWI.png)
+![1691936840281.png](https://img.weenas.com/GkgKWI.png)
 
 After the account is created, the system automatically sends a verification email through the configured SMTP service. The account can be used only after you click the verification link in that email.
-![1691937163354.png](https://photo.weenas.com/f1FXz9.png)
+![1691937163354.png](https://img.weenas.com/f1FXz9.png)
 
 ## Basic Features
 
 After verifying your email, log in with your email and master password to see the main screen:
-![1691937281163.png](https://photo.weenas.com/mZ2iqD.png)
+![1691937281163.png](https://img.weenas.com/mZ2iqD.png)
 
 From the main screen you can get a rough idea of the main features: storing login credentials, payment cards, identities and secure notes — all highly private information. If you store a lot, you can organize items into folders so you can find them quickly when needed.
 

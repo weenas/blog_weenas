@@ -1,6 +1,6 @@
 ---
 title: Openwrt 透明代理
-image: https://photo.weenas.com/gtB7gP.png
+image: https://img.weenas.com/gtB7gP.png
 date: 2023-08-14T15:13:18+08:00
 description: 家庭代理新方案
 keywords:
