@@ -12,7 +12,7 @@ tags:
   - network
   - openwrt
   - proxy
-draft: true
+draft: false
 pubDatetime: 2026-10-23
 ---
 
