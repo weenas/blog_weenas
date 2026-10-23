@@ -4,13 +4,12 @@ import config from "@/config";
 /**
  * Determines whether a post is eligible to be listed/rendered.
  *
- * - Excludes drafts always
- * - In production, excludes scheduled posts until `pubDatetime` minus the configured margin
- * - In dev, always shows non-draft posts to make authoring easier
+ * - In dev, includes drafts so authors can preview unpublished posts
+ * - In production, excludes drafts and scheduled posts until `pubDatetime` minus the configured margin
  */
 export function postFilter({ data }: CollectionEntry<"posts">) {
   const isPublishTimePassed =
     Date.now() >
     new Date(data.pubDatetime).getTime() - config.posts.scheduledPostMargin;
-  return !data.draft && (import.meta.env.DEV || isPublishTimePassed);
+  return import.meta.env.DEV || (!data.draft && isPublishTimePassed);
 }

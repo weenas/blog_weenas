@@ -4,7 +4,15 @@ import { imageMetadata } from "astro/assets/utils";
 export const IMAGE_DOMAINS = ["photo.weenas.com", "cmake.org"];
 
 const ATTEMPTS = 4;
+/** Probes read only a few KB, so a plain overall timeout is fine for them. */
 const TIMEOUT_MS = 60_000;
+/**
+ * Downloads abort only when no data arrives for this long, so a large file
+ * (the 43 MB GIF) can finish over a slow home uplink as long as it keeps
+ * flowing; MAX_DOWNLOAD_MS caps a single attempt.
+ */
+const STALL_MS = 30_000;
+const MAX_DOWNLOAD_MS = 10 * 60_000;
 /** Marks our own size probes, which stream only the first bytes. */
 const PROBE_HEADER = "x-blog-image-probe";
 
@@ -23,6 +31,62 @@ async function withRetry<T>(task: () => Promise<T>): Promise<T> {
   throw lastError;
 }
 
+/** Fetches and buffers the whole body, aborting if the transfer stalls. */
+async function fetchBuffered(
+  realFetch: typeof fetch,
+  input: RequestInfo | URL,
+  init?: RequestInit
+): Promise<Response> {
+  const controller = new AbortController();
+  const overall = setTimeout(
+    () => controller.abort(new Error("download took too long")),
+    MAX_DOWNLOAD_MS
+  );
+  let stall: ReturnType<typeof setTimeout> | undefined;
+  const touch = () => {
+    clearTimeout(stall);
+    stall = setTimeout(
+      () => controller.abort(new Error(`no data for ${STALL_MS / 1000}s`)),
+      STALL_MS
+    );
+  };
+  try {
+    touch();
+    const res = await realFetch(input, { ...init, signal: controller.signal });
+    let body: Uint8Array<ArrayBuffer> | null = null;
+    if (![204, 304].includes(res.status) && res.body) {
+      const reader = res.body.getReader();
+      const chunks: Uint8Array[] = [];
+      let length = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        length += value.length;
+        touch();
+      }
+      body = new Uint8Array(length);
+      let offset = 0;
+      for (const chunk of chunks) {
+        body.set(chunk, offset);
+        offset += chunk.length;
+      }
+    }
+    const headers = new Headers(res.headers);
+    // The body is already decoded and complete.
+    headers.delete("content-encoding");
+    headers.delete("content-length");
+    return new Response(body, {
+      status: res.status,
+      statusText: res.statusText,
+      headers,
+    });
+  } finally {
+    clearTimeout(stall);
+    clearTimeout(overall);
+  }
+}
+
 function isImageHost(input: RequestInfo | URL) {
   const url = input instanceof Request ? input.url : String(input);
   try {
@@ -36,7 +100,7 @@ function isImageHost(input: RequestInfo | URL) {
  * Astro downloads remote images with the global fetch and only warns when a
  * download breaks mid-body ("TypeError: terminated"), leaving pages pointing
  * at files that were never written. For the image hosts, read the whole body
- * here with timeouts and retries, and hand Astro an already-buffered response.
+ * here with a stall timeout and retries, and hand Astro a buffered response.
  */
 export function installImageFetchRetry() {
   const realFetch = globalThis.fetch;
@@ -49,25 +113,13 @@ export function installImageFetchRetry() {
     if (!isImageHost(input) || headers.has(PROBE_HEADER)) {
       return realFetch(input, init);
     }
-    return withRetry(async () => {
-      const req = input instanceof Request ? input.clone() : input;
-      const res = await realFetch(req, {
-        ...init,
-        signal: AbortSignal.timeout(TIMEOUT_MS),
-      });
-      const body = [204, 304].includes(res.status)
-        ? null
-        : await res.arrayBuffer();
-      const outHeaders = new Headers(res.headers);
-      // The body is already decoded and complete.
-      outHeaders.delete("content-encoding");
-      outHeaders.delete("content-length");
-      return new Response(body, {
-        status: res.status,
-        statusText: res.statusText,
-        headers: outHeaders,
-      });
-    });
+    return withRetry(() =>
+      fetchBuffered(
+        realFetch,
+        input instanceof Request ? input.clone() : input,
+        init
+      )
+    );
   };
   Object.assign(fetchWithRetry, { __imageRetry: true });
   globalThis.fetch = fetchWithRetry as typeof fetch;
