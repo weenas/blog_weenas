@@ -63,3 +63,9 @@ src/pages/              路由
 ## 发布
 
 推送到 `master` 后，Cloudflare Pages 会自动构建并发布。修改建议走 PR：CI（lint、格式检查、构建）通过后自动合并。
+
+## 搜索引擎收录
+
+站点已生成 `https://blog.weenas.com/robots.txt` 和 sitemap index（`https://blog.weenas.com/sitemap-index.xml`），页面包含 canonical、双语 alternate 和描述信息；搜索页与 404 页设置为 `noindex`。Google Search Console 与 Bing Webmaster Tools 的 HTML 验证标记已配置在站点设置中。
+
+在 [Google Search Console](https://search.google.com/search-console/) 和 [Bing Webmaster Tools](https://www.bing.com/webmasters/) 添加 `https://blog.weenas.com/` 后，提交 sitemap：`https://blog.weenas.com/sitemap-index.xml`。Google 也会从 `robots.txt` 发现 sitemap。

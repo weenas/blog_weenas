@@ -201,6 +201,11 @@ const websiteData = {
         />
       )
     }
+    {
+      site.bingVerification && (
+        <meta name="msvalidate.01" content={site.bingVerification} />
+      )
+    }
 
     <!--
       Inline FOUC-prevention script: sets data-theme on <html> before

@@ -9,6 +9,8 @@ export default defineAstroPaperConfig({
     profile: "https://github.com/easonxiang",
     ogImage: "default-og.jpg",
     lang: "en",
+    googleVerification: "Y6VubbWBGYz9tLmVTOoR4rcjThETjxR7fxVf4U6udIQ",
+    bingVerification: "92DD827E38EA11E9EFB394F55CEACE8E",
     timezone: "Asia/Shanghai",
     dir: "ltr",
   },
