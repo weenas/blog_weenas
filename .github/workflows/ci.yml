@@ -16,7 +16,10 @@ jobs:
   build:
     name: Code standards & build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Cold builds download every post image from the home photo host (the
+    # largest is 43 MB), which can take well over 10 minutes; once a run
+    # succeeds, the node_modules/.astro cache makes later builds fast.
+    timeout-minutes: 30
 
     steps:
       - name: "☁️ Checkout repository"
