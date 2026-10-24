@@ -1,6 +1,6 @@
 ---
 title: CMake History and Architecture (Chinese Translation Notes)
-image: https://img.weenas.com/cmake-cross-platform-testing.png
+image: https://img.weenas.com/optimized/cmake-cross-platform-testing.webp
 date: 2024-07-06 15:56:43
 tags:
   - cmake
