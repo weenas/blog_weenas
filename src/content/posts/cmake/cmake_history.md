@@ -1,6 +1,6 @@
 ---
 title: CMake 历史和原理简析
-image: https://cmake.org/wp-content/uploads/2023/08/Cross_Platform_Testing.png
+image: https://img.weenas.com/cmake-cross-platform-testing.png
 date: 2024-07-06 15:56:43
 tags:
   - cmake
@@ -93,16 +93,16 @@ CMake 有两个主要阶段。第一个阶段是“配置”步骤，CMake 处�
 
 一旦完成配置步骤，就可以进行生成步骤。生成步骤是 CMake 为用户选择的目标构建工具创建构建文件的步骤。此时，目标（库、可执行文件、自定义目标）的内部表示将转换为 IDE 构建工具（如 Visual Studio）的输入，或一组由`make`执行的 Makefile。配置步骤后的 CMake 的内部表示尽可能通用，以便尽可能多的代码和数据结构可以在不同的构建工具之间共享。
 
-该过程的概览如[图 1](https://aosabook.org/static/cmake/process.png)所示：
-![图1.1](https://aosabook.org/static/cmake/process.png)
+该过程的概览如[图 1](https://img.weenas.com/aosabook-cmake-process.png)所示：
+![图1.1](https://img.weenas.com/aosabook-cmake-process.png)
 图 1 Cmake 流程概述
 
 ### CMake 实现
 
 #### CMake 对象
 
-CMake 是一个使用继承、设计模式和封装的面向对象语言，主要的 C++ 对象及其关系如[图2](https://aosabook.org/static/cmake/objects.png)所示：
-![图1.2](https://aosabook.org/static/cmake/objects.png)
+CMake 是一个使用继承、设计模式和封装的面向对象语言，主要的 C++ 对象及其关系如[图2](https://img.weenas.com/aosabook-cmake-objects.png)所示：
+![图1.2](https://img.weenas.com/aosabook-cmake-objects.png)
 图 2 CMake对象
 
 解析每个`CMakeLists.txt`文件的结果都存储在`cmMakefile`对象中。除了存储有关目录的信息之外，`cmMakefile`还控制`CMakeLists.txt`文件的解析，解析函数基于 lex/yacc 来解析 CMake 语言。由于 CMake 语言语法很少更改，并且 lex 和 yacc 并不总是在构建 CMake 的系统上可用，因此 lex 和 yacc 输出文件会处理并存储到`Source`目录，并与其他手写文件一起受到版本控制。
@@ -151,11 +151,11 @@ CMake 内置具有针对单个 Fortran、C 和 C++ 源代码文件的强大依�
 
 ### 图形界面
 
-许多用户第一次看到 CMake 的地方就是 CMake 的用户界面程序之一。CMake 有两个主要的用户界面程序：一个基于 Qt 的窗口应用程序和一个基于`curses`命令行的图形应用程序。这些 GUI 是`CMakeCache.txt`文件的图形编辑器。它们是相对简单的界面，有两个按钮，配置和生成，用于触发 CMake 过程的主要阶段。基于 curses 的 GUI 可在 Unix TTY 类型的平台和 Cygwin 上使用。Qt GUI 可在所有平台上使用。GUI 可以在[图 3](https://aosabook.org/static/cmake/GUI1.png)和[图 4](https://aosabook.org/static/cmake/GUI2.png)中看到。
-![图 3](https://aosabook.org/static/cmake/GUI1.png)
+许多用户第一次看到 CMake 的地方就是 CMake 的用户界面程序之一。CMake 有两个主要的用户界面程序：一个基于 Qt 的窗口应用程序和一个基于`curses`命令行的图形应用程序。这些 GUI 是`CMakeCache.txt`文件的图形编辑器。它们是相对简单的界面，有两个按钮，配置和生成，用于触发 CMake 过程的主要阶段。基于 curses 的 GUI 可在 Unix TTY 类型的平台和 Cygwin 上使用。Qt GUI 可在所有平台上使用。GUI 可以在[图 3](https://img.weenas.com/aosabook-cmake-gui1.png)和[图 4](https://img.weenas.com/aosabook-cmake-gui2.png)中看到。
+![图 3](https://img.weenas.com/aosabook-cmake-gui1.png)
 图 3 命令行界面
 
-![图 4](https://aosabook.org/static/cmake/GUI2.png)
+![图 4](https://img.weenas.com/aosabook-cmake-gui2.png)
 图 4 基于图形的界面
 
 两个 GUI 的左侧都有缓存变量名称，右侧有值。用户可以将右侧的值更改为适合构建的值。变量有两种类型：普通变量和高级变量。默认情况下，普通变量会显示给用户。项目可以确定`CMakeLists.txt`项目文件中的哪些变量是高级变量。这允许用户在构建过程中获得尽可能少的选项。
