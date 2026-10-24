@@ -84,7 +84,7 @@ export default defineConfig({
     },
   },
   image: {
-    // Post images live on the photo host; let Astro fetch and optimize them
+    // Post images live on the photo host or R2; let Astro fetch and optimize them
     // (webp, srcset, width/height) at build time.
     domains: IMAGE_DOMAINS,
     layout: "constrained",
