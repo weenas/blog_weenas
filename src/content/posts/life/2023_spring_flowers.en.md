@@ -1,6 +1,6 @@
 ---
 title: Spring Blossoms
-image: https://img.weenas.com/1cRZUI.jpg
+image: https://img.weenas.com/optimized/1cRZUI.webp
 date: 2023-06-05
 tags:
   - photo
@@ -12,19 +12,19 @@ pubDatetime: 2023-06-05
 
 Spring is a pleasant season, a colorful season, the season when everything comes back to life.
 <!--more-->
-![1685853499291.jpg](https://img.weenas.com/1cRZUI.jpg)
+![1685853499291.jpg](https://img.weenas.com/optimized/1cRZUI.webp)
 
 In the early morning, golden sunlight filters through the gaps in the trees, casting soft shadows, and the wisteria glistens in the light.
-![1685853209625.jpg](https://img.weenas.com/4LG2v6.jpg)
+![1685853209625.jpg](https://img.weenas.com/optimized/4LG2v6.webp)
 
 Sunlight pours down through the dense tangle of wisteria branches, dazzlingly bright.
-![1685853063785.jpg](https://img.weenas.com/IRgTOZ.jpg)
+![1685853063785.jpg](https://img.weenas.com/optimized/IRgTOZ.webp)
 
 The wisteria is about to wither, giving it a weathered, timeworn feel.
-![1685853529831.jpg](https://img.weenas.com/VVPByq.jpg)
+![1685853529831.jpg](https://img.weenas.com/optimized/VVPByq.webp)
 
 The roses in the garden are all in bloom, a riot of color.
-![1685853717941.jpg](https://img.weenas.com/g0A6Lc.jpg)
+![1685853717941.jpg](https://img.weenas.com/optimized/g0A6Lc.webp)
 
 The grass along the riverbank is growing strong too; from a distance it looks as if a soft filter has been applied — hazy and dreamlike.
-![1685853446063.jpg](https://img.weenas.com/yodFMC.jpg)
+![1685853446063.jpg](https://img.weenas.com/optimized/yodFMC.webp)

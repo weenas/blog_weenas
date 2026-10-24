@@ -1,6 +1,6 @@
 ---
 title: 春日赏花
-image: https://img.weenas.com/1cRZUI.jpg
+image: https://img.weenas.com/optimized/1cRZUI.webp
 date: 2023-06-05
 tags:
   - photo
@@ -12,19 +12,19 @@ pubDatetime: 2023-06-05
 
 春天是宜人的季节，多彩的季节，是万物复苏的季节。
 <!--more-->
-![1685853499291.jpg](https://img.weenas.com/1cRZUI.jpg)
+![1685853499291.jpg](https://img.weenas.com/optimized/1cRZUI.webp)
 
 清晨，金色的阳光从林子的缝隙里照射进来，留下了柔美的阴影，紫藤花在阳光下晶莹剔透。
-![1685853209625.jpg](https://img.weenas.com/4LG2v6.jpg)
+![1685853209625.jpg](https://img.weenas.com/optimized/4LG2v6.webp)
 
 阳光从密密麻麻的紫藤枝干中洒下来，显得格外耀眼。
-![1685853063785.jpg](https://img.weenas.com/IRgTOZ.jpg)
+![1685853063785.jpg](https://img.weenas.com/optimized/IRgTOZ.webp)
 
 紫藤花已经快要凋谢，有一种沧桑的感觉。
-![1685853529831.jpg](https://img.weenas.com/VVPByq.jpg)
+![1685853529831.jpg](https://img.weenas.com/optimized/VVPByq.webp)
 
 花园里的月季花竞相开放，姹紫千红。
-![1685853717941.jpg](https://img.weenas.com/g0A6Lc.jpg)
+![1685853717941.jpg](https://img.weenas.com/optimized/g0A6Lc.webp)
 
 河岸边的小草也在茁壮成长，从远处看像是加了一层柔和滤镜，朦胧而梦幻。
-![1685853446063.jpg](https://img.weenas.com/yodFMC.jpg)
+![1685853446063.jpg](https://img.weenas.com/optimized/yodFMC.webp)

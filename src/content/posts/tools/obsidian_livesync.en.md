@@ -1,6 +1,6 @@
 ---
 title: Real-Time Obsidian Sync Across Devices
-image: https://img.weenas.com/WLP8JP.png
+image: https://img.weenas.com/optimized/WLP8JP.webp
 date: 2023-06-04
 tags:
   - Docker
@@ -14,7 +14,7 @@ keywords:
 pubDatetime: 2023-06-04
 ---
 
-![Obsidian](https://img.weenas.com/WLP8JP.png)
+![Obsidian](https://img.weenas.com/optimized/WLP8JP.webp)
 Obsidian is a powerful Markdown note-taking app with excellent cross-platform support. It offers an official sync service, but the price isn't very friendly, so here I'll introduce a free real-time sync solution.
 
 <!--more-->

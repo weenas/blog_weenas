@@ -1,6 +1,6 @@
 ---
 title: Obsidian多设备实时同步方法
-image: https://img.weenas.com/WLP8JP.png
+image: https://img.weenas.com/optimized/WLP8JP.webp
 date: 2023-06-04
 tags:
   - Docker
@@ -14,7 +14,7 @@ keywords:
 pubDatetime: 2023-06-04
 ---
 
-![Obsidian](https://img.weenas.com/WLP8JP.png)
+![Obsidian](https://img.weenas.com/optimized/WLP8JP.webp)
 Obsidian意为”黑曜石“，是一个功能强大的Markdown笔记软件，对跨平台的支持非常好。官方提供了笔记同步功能，但是价格不太友好，因此在这里介绍一种免费的实时同步方案。
 
 <!--more-->
