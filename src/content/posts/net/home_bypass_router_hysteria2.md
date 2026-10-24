@@ -2,7 +2,7 @@
 title: 用 NAS 虚拟 OpenWrt 搭建家庭旁路由代理
 date: 2026-10-23T18:00:00+08:00
 description: 记录在 NAS 虚拟机中运行 OpenWrt，以 sing-box 和 Hysteria2 为出口，为家庭设备提供按规则分流的旁路由方案，以及 DNS、IPv6 和故障回退的处理。
-image: /images/posts/openwrt-bypass-router-cover.jpg
+image: https://img.weenas.com/openwrt-bypass-router-cover.jpg
 keywords:
   - OpenWrt
   - sing-box
@@ -20,13 +20,13 @@ pubDatetime: 2026-10-23
 
 我换了一个更容易回退的做法：在 NAS 的虚拟机里运行一台 OpenWrt，把它作为旁路由；先让一台电脑或电视单独使用它，确认分流和 DNS 正常后，再决定要不要扩大使用范围。家庭主路由仍然负责原有的网络连接，旁路由出现故障时，测试设备可以改回主路由。
 
-![NAS 虚拟 OpenWrt 旁路由通过规则分流连接家庭网络和 VPS](/images/posts/openwrt-bypass-router-cover.jpg)
+![NAS 虚拟 OpenWrt 旁路由通过规则分流连接家庭网络和 VPS](https://img.weenas.com/openwrt-bypass-router-cover.jpg)
 
 ## 网络结构和方案选择
 
 这套方案里，NAS 上的虚拟 OpenWrt 通过现有家庭网络接入主路由。它不替换主路由，也不负责给全家设备分配地址。需要测试的设备把默认网关和 DNS 临时指向旁路由，由旁路由根据规则决定流量的去向：直连流量经主路由访问互联网；代理流量由旁路由封装进 Hysteria2 隧道，同样经主路由发往 VPS，再由 VPS 访问目标网站。旁路由只有主路由这一个上游，两条路径最终都要经过主路由。
 
-![测试设备把网关和 DNS 指向 NAS 上的虚拟 OpenWrt；直连流量经主路由访问互联网，代理流量经主路由进入 Hysteria2 隧道到 VPS](/images/posts/bypass-router-network.svg)
+![测试设备把网关和 DNS 指向 NAS 上的虚拟 OpenWrt；直连流量经主路由访问互联网，代理流量经主路由进入 Hysteria2 隧道到 VPS](https://img.weenas.com/bypass-router-network.svg)
 
 和在每台设备上安装代理客户端相比，这种方式的终端不需要安装任何软件，只要把网关和 DNS 指向旁路由；分流规则也只需在旁路由上维护一份。
 
