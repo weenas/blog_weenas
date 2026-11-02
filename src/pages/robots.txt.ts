@@ -1,6 +1,9 @@
 import type { APIRoute } from "astro";
 
 const getRobotsTxt = (sitemapURL: URL) => `
+User-agent: Baiduspider
+Allow: /
+
 User-agent: *
 Allow: /
 
