@@ -3,7 +3,7 @@ import { defineAstroPaperConfig } from "./src/types/config";
 export default defineAstroPaperConfig({
   site: {
     url: "https://blog.weenas.com/",
-    title: "Weenas Blog",
+    title: "川流不息",
     description: "Eason's notes on networking, tools, embedded development and life.",
     author: "Eason Xiang",
     profile: "https://github.com/easonxiang",
