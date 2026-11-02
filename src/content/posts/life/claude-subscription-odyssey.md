@@ -1,5 +1,7 @@
 ---
 title: 订个 Claude 会员，绕了地球半圈
+image: https://img.weenas.com/claude-subscription-odyssey.jpg
+ogImage: https://img.weenas.com/claude-subscription-odyssey.jpg
 author: Eason
 pubDatetime: 2026-11-02T09:21:00Z
 slug: claude-subscription-odyssey
