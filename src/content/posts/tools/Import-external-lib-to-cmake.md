@@ -1,5 +1,6 @@
 ---
 title: CMake如何导入外部库
+image: https://img.weenas.com/optimized/blog-cover-cmake-library-20261103.webp
 tags:
   - cmake
   - tools

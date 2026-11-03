@@ -1,5 +1,6 @@
 ---
 title: My Vim Configuration
+image: https://img.weenas.com/optimized/blog-cover-vim-20261103.webp
 date: 2017-02-03
 tags:
   - tools

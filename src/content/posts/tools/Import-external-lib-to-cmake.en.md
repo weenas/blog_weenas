@@ -1,5 +1,6 @@
 ---
 title: Importing External Libraries in CMake
+image: https://img.weenas.com/optimized/blog-cover-cmake-library-20261103.webp
 tags:
   - cmake
   - tools
