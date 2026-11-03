@@ -3,5 +3,10 @@
 # linode_usage used to have `slug: 8db64a10`
 /posts/net/8db64a10/     /posts/net/linode_usage/      301
 /posts/net/8db64a10      /posts/net/linode_usage/      301
-/zh/posts/net/8db64a10/  /zh/posts/net/linode_usage/   301
-/zh/posts/net/8db64a10   /zh/posts/net/linode_usage/   301
+/zh/posts/net/8db64a10/  /posts/net/linode_usage/      301
+/zh/posts/net/8db64a10   /posts/net/linode_usage/      301
+
+# Chinese pages now live at the root paths.
+/zh                      /                             301
+/zh/                     /                             301
+/zh/*                    /:splat                       301

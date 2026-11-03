@@ -4,11 +4,11 @@ export default defineAstroPaperConfig({
   site: {
     url: "https://blog.weenas.com/",
     title: "川流不息",
-    description: "Eason's notes on networking, tools, embedded development and life.",
+    description: "Eason 的技术笔记：网络、工具、嵌入式开发与生活记录。",
     author: "Eason Xiang",
     profile: "https://github.com/easonxiang",
     ogImage: "default-og.jpg",
-    lang: "en",
+    lang: "zh",
     googleVerification: "Y6VubbWBGYz9tLmVTOoR4rcjThETjxR7fxVf4U6udIQ",
     bingVerification: "92DD827E38EA11E9EFB394F55CEACE8E",
     timezone: "Asia/Shanghai",
