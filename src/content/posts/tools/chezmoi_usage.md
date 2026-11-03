@@ -1,6 +1,6 @@
 ---
 title: Chezmoi 使用简介
-image:
+image: https://img.weenas.com/optimized/blog-cover-chezmoi-20261103.webp
 date: 2026-09-17
 tags:
   - chezmoi

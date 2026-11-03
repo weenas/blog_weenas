@@ -1,5 +1,6 @@
 ---
 title: Shadowsocks Configuration
+image: https://img.weenas.com/optimized/blog-cover-shadowsocks-20261103.webp
 date: 2017-12-06 15:56:43
 tags:
   - tools
