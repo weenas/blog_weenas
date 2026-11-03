@@ -47,6 +47,8 @@ const serverURL =
       pageview: false,
       comment: false,
       emoji: false,
+      noRss: true,
+      noCopyright: true,
       requiredMeta: ["nick"],
     });
   });
@@ -68,5 +70,18 @@ const serverURL =
     margin-bottom: 1rem;
     color: var(--color-muted-foreground);
     font-size: 0.8rem;
+  }
+  #waline-comments {
+    --waline-bg-color: var(--background-alt);
+    --waline-bg-color-light: var(--muted);
+    --waline-bg-color-hover: var(--muted);
+    --waline-color: var(--foreground);
+    --waline-light-grey: var(--muted-foreground);
+    --waline-dark-grey: var(--muted-foreground);
+    --waline-border-color: var(--border);
+    --waline-theme-color: var(--accent);
+    --waline-active-color: var(--accent-hover);
+    --waline-disable-bg-color: var(--muted);
+    --waline-disable-color: var(--muted-foreground);
   }
 </style>
