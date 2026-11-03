@@ -1,8 +1,10 @@
 ---
 import { type CollectionEntry, getCollection, render } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import PostLayout from "@/layouts/PostLayout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import Socials from "@/components/Socials.astro";
 import Datetime from "@/components/Datetime.astro";
 import Tag from "@/components/Tag.astro";
 import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
@@ -50,6 +52,9 @@ const postLang = getPostLang(post);
 // sortedPosts is newest-first, so "older" (prev) is a higher index
 // and "newer" (next) is a lower index.
 const sortedPosts = getSortedPosts(localizePosts(allPosts, locale));
+const tagCount = new Set(
+  sortedPosts.flatMap(({ data }) => data.tags.map(slugifyStr))
+).size;
 const postIndex = sortedPosts.findIndex(({ id }) => id === post.id);
 const toAdjacentPost = (adjacent?: CollectionEntry<"posts">) =>
   adjacent
@@ -127,103 +132,139 @@ const ogImage = ogImageUrl
 >
   <Header />
 
-  <BackButton />
-
-  <main
-    id="main-content"
-    class:list={[
-      "app-layout relative",
-      { "mt-8": !config.features.showBackButton },
-    ]}
-    data-pagefind-body
-  >
-    {
-      showToc && (
-        <aside class="absolute inset-s-full top-0 hidden h-full w-56 ps-8 xl:block">
-          <TableOfContents
-            headings={tocHeadings}
-            title={t.post.onThisPage}
-            variant="sidebar"
-            class="sticky top-24 max-h-[calc(100svh-8rem)] overflow-y-auto"
-          />
-        </aside>
-      )
-    }
-
-    <h1
-      style={{ viewTransitionName: toTransitionName(post.id) }}
-      class="text-foreground inline-block text-3xl leading-tight font-bold tracking-tight text-balance sm:text-4xl"
-    >
-      {title}
-    </h1>
-
-    <div class="my-2 flex items-center gap-2">
-      <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
-      <span
-        aria-hidden="true"
-        class:list={[
-          "text-muted-foreground max-sm:hidden",
-          { hidden: !config.features.editPost?.enabled || hideEditPost },
-        ]}
-      >
-        |
-      </span>
-      <EditPost {hideEditPost} {post} class="max-sm:hidden" />
+  <div class="article-page">
+    <div class="article-banner" aria-hidden="true">
+      <img
+        src="https://img.weenas.com/optimized/lake-banner-bright-preview-20261103.webp"
+        alt=""
+        width="1800"
+        height="811"
+        decoding="async"
+      />
     </div>
+    <div class="article-grid">
+      <aside
+        class="article-sidebar"
+        aria-label="博客信息和文章目录"
+        data-pagefind-ignore
+      >
+        <section class="profile-card">
+          <div class="profile-cover"></div>
+          <img
+            class="profile-avatar"
+            src={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}images/chuanliu-avatar.webp`}
+            alt=""
+            width="88"
+            height="88"
+          />
+          <h2>Eason</h2>
+          <p>{t.home.heroLead}</p>
+          <div class="profile-stats">
+            <a href={getRelativeLocaleUrl(locale, "posts/")}
+              ><strong>{sortedPosts.length}</strong><span>文章</span></a
+            >
+            <a href={getRelativeLocaleUrl(locale, "tags/")}
+              ><strong>{tagCount}</strong><span>标签</span></a
+            >
+          </div>
+          <div class="profile-socials"><Socials /></div>
+        </section>
+        {
+          showToc && (
+            <section class="toc-card">
+              <TableOfContents
+                headings={tocHeadings}
+                title={t.post.onThisPage}
+                variant="sidebar"
+                class="article-toc"
+              />
+            </section>
+          )
+        }
+      </aside>
+      <main id="main-content" class="article-card" data-pagefind-body>
+        <BackButton />
 
-    {
-      postLang !== locale && (
-        <p
-          data-pagefind-ignore
-          class="border-border text-muted-foreground mt-6 border-s-4 ps-3 text-sm"
+        <h1
+          style={{ viewTransitionName: toTransitionName(post.id) }}
+          class="text-foreground inline-block text-3xl leading-tight font-bold tracking-tight text-balance sm:text-4xl"
         >
-          {tplStr(t.post.translationUnavailable, {
-            target: t.languages[locale],
-            source: t.languages[postLang],
-          })}
-        </p>
-      )
-    }
+          {title}
+        </h1>
 
-    {
-      showToc && (
-        <TableOfContents
-          headings={tocHeadings}
-          title={t.post.onThisPage}
-          variant="inline"
-          class="mt-8 xl:hidden"
-        />
-      )
-    }
+        <div class="my-2 flex items-center gap-2">
+          <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
+          <span
+            aria-hidden="true"
+            class:list={[
+              "text-muted-foreground max-sm:hidden",
+              { hidden: !config.features.editPost?.enabled || hideEditPost },
+            ]}
+          >
+            |
+          </span>
+          <EditPost {hideEditPost} {post} class="max-sm:hidden" />
+        </div>
 
-    <article
-      id="article"
-      lang={LOCALE_META[postLang].htmlLang}
-      class:list={[
-        "mt-8 w-full",
-        "app-prose max-w-app",
-        "prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)",
-      ]}
-    >
-      <Content />
-    </article>
+        {
+          postLang !== locale && (
+            <p
+              data-pagefind-ignore
+              class="border-border text-muted-foreground mt-6 border-s-4 ps-3 text-sm"
+            >
+              {tplStr(t.post.translationUnavailable, {
+                target: t.languages[locale],
+                source: t.languages[postLang],
+              })}
+            </p>
+          )
+        }
 
-    <hr class="my-8 border-dashed" />
+        {
+          showToc && (
+            <TableOfContents
+              headings={tocHeadings}
+              title={t.post.onThisPage}
+              variant="inline"
+              class="article-inline-toc mt-8"
+            />
+          )
+        }
 
-    <EditPost class="sm:hidden" {hideEditPost} {post} />
+        <article
+          id="article"
+          lang={LOCALE_META[postLang].htmlLang}
+          class:list={[
+            "mt-8 w-full",
+            "app-prose max-w-app",
+            "prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)",
+          ]}
+        >
+          <Content />
+        </article>
 
-    <BackToTopButton />
+        <hr class="my-8 border-dashed" />
 
-    <ul class="mt-4 mb-8 flex flex-wrap gap-2 sm:my-8">
-      {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
-    </ul>
+        <EditPost class="sm:hidden" {hideEditPost} {post} />
 
-    <ShareLinks />
+        <BackToTopButton />
 
-    <hr class="my-8 border-dashed" />
+        <ul class="mt-4 mb-8 flex flex-wrap gap-2 sm:my-8">
+          {
+            tags.map(tag => (
+              <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />
+            ))
+          }
+        </ul>
 
-    <AdjacentPostNav {prevPost} {nextPost} />
-  </main>
+        <ShareLinks />
+
+        <hr class="my-8 border-dashed" />
+
+        <AdjacentPostNav {prevPost} {nextPost} />
+      </main>
+    </div>
+  </div>
   <Footer />
 </PostLayout>
 
@@ -575,3 +616,148 @@ const ogImage = ogImageUrl
     window.scrollTo({ left: 0, top: 0, behavior: "instant" })
   );
 </script>
+
+<style>
+  .article-page {
+    --article-bg: #f1f5f8;
+    --article-card: #fff;
+    background: var(--article-bg);
+    padding-bottom: 5rem;
+  }
+  :global([data-theme="dark"]) .article-page {
+    --article-bg: #101b2b;
+    --article-card: #1b293a;
+  }
+  .article-banner {
+    height: 220px;
+    overflow: hidden;
+    background: #244d64;
+  }
+  .article-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 48%;
+  }
+  .article-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 1.35rem;
+    align-items: start;
+    max-width: 1100px;
+    margin: -2.75rem auto 0;
+    padding: 0 1.5rem;
+  }
+  .article-card,
+  .profile-card,
+  .toc-card {
+    min-width: 0;
+    border-radius: 20px;
+    background: var(--article-card);
+    box-shadow: 0 8px 30px #1d415008;
+  }
+  .article-card {
+    padding: 0 2.5rem 2.5rem;
+  }
+  .article-card :global(> .app-layout) {
+    padding-inline: 0;
+  }
+  .article-sidebar {
+    align-self: stretch;
+  }
+  .profile-card {
+    text-align: center;
+    padding: 0 1.35rem 1.25rem;
+    overflow: hidden;
+  }
+  .profile-cover {
+    height: 72px;
+    margin: 0 -1.35rem;
+    background: linear-gradient(120deg, #99d5db, #7fb6d1 52%, #b8dfe1);
+  }
+  .profile-avatar {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    margin: -44px auto 0.75rem;
+    padding: 10px;
+    border: 5px solid var(--article-card);
+    border-radius: 50%;
+    background: var(--article-card);
+    object-fit: contain;
+  }
+  .profile-card h2 {
+    font-size: 1.25rem;
+    font-weight: 750;
+  }
+  .profile-card p {
+    color: var(--color-muted-foreground);
+    font-size: 0.83rem;
+    line-height: 1.8;
+    margin: 0.55rem 0 1rem;
+  }
+  .profile-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2.8rem;
+    margin: 0.3rem 0 0.8rem;
+  }
+  .profile-stats a {
+    display: grid;
+    gap: 0.1rem;
+    text-decoration: none;
+  }
+  .profile-stats strong {
+    font-size: 1.1rem;
+  }
+  .profile-stats span {
+    color: var(--color-muted-foreground);
+    font-size: 0.75rem;
+  }
+  .profile-socials {
+    display: flex;
+    justify-content: center;
+    color: #168fa3;
+  }
+  :global([data-theme="dark"]) .profile-socials {
+    color: #5ac9d1;
+  }
+  .toc-card {
+    position: sticky;
+    top: 5.5rem;
+    margin-top: 1rem;
+    padding: 1.4rem;
+  }
+  .article-sidebar :global(.article-toc) {
+    max-height: calc(100svh - 10rem);
+    overflow-y: auto;
+  }
+  @media (min-width: 960px) {
+    .article-card :global(.article-inline-toc) {
+      display: none;
+    }
+  }
+  @media (max-width: 959px) {
+    .article-grid {
+      max-width: 850px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .article-sidebar {
+      display: none;
+    }
+  }
+  @media (max-width: 560px) {
+    .article-banner {
+      height: 150px;
+    }
+    .article-grid {
+      padding: 0 1rem;
+      margin-top: -2rem;
+    }
+    .article-card {
+      padding: 0 1.25rem 1.5rem;
+      border-radius: 18px;
+    }
+  }
+</style>
