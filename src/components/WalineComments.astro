@@ -1,0 +1,72 @@
+---
+const serverURL =
+  import.meta.env.PUBLIC_WALINE_SERVER ||
+  (import.meta.env.DEV ? "http://127.0.0.1:8792" : "https://waline.weenas.com");
+---
+
+{
+  serverURL && (
+    <section class="waline-section" data-pagefind-ignore>
+      <h2>评论</h2>
+      {import.meta.env.DEV && (
+        <p class="waline-preview">本地试用环境，评论仅用于测试。</p>
+      )}
+      <div id="waline-comments" data-server-url={serverURL} />
+    </section>
+  )
+}
+
+<script>
+  import "@waline/client/waline.css";
+  import type { WalineInstance } from "@waline/client";
+
+  let instance: WalineInstance | null = null;
+  let generation = 0;
+
+  document.addEventListener("astro:before-swap", () => {
+    generation += 1;
+    instance?.destroy();
+    instance = null;
+  });
+
+  document.addEventListener("astro:page-load", async () => {
+    const target = document.querySelector<HTMLElement>("#waline-comments");
+    const serverURL = target?.dataset.serverUrl;
+    if (!target || !serverURL) return;
+
+    const current = ++generation;
+    const { init } = await import("@waline/client");
+    if (current !== generation || !target.isConnected) return;
+    instance?.destroy();
+    instance = init({
+      el: target,
+      serverURL,
+      path: window.location.pathname.replace(/\/+$/, "") || "/",
+      lang: "zh-CN",
+      dark: 'html[data-theme="dark"]',
+      pageview: false,
+      comment: false,
+      emoji: false,
+      requiredMeta: ["nick"],
+    });
+  });
+</script>
+
+<style>
+  .waline-section {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px dashed var(--color-border);
+  }
+  .waline-section h2 {
+    margin-bottom: 0.75rem;
+    color: var(--color-foreground);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .waline-preview {
+    margin-bottom: 1rem;
+    color: var(--color-muted-foreground);
+    font-size: 0.8rem;
+  }
+</style>
