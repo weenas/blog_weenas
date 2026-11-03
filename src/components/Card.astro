@@ -1,8 +1,8 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import WeenasLogo from "@/assets/icons/WeenasLogo.svg";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { toTransitionName } from "@/utils/toTransitionName";
+import { getAssetPath } from "@/utils/withBase";
 import Datetime from "./Datetime.astro";
 
 type Props = {
@@ -52,12 +52,15 @@ const { title, description, image, ...props } = data;
           class="size-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       ) : (
-        <div
-          aria-hidden="true"
-          class="from-accent/15 to-accent-2/10 flex size-full items-center justify-center bg-linear-to-br"
-        >
-          <WeenasLogo class="text-accent/60 h-1/2 w-auto" />
-        </div>
+        <img
+          src={getAssetPath("images/chuanliu-avatar.webp")}
+          alt=""
+          width="512"
+          height="512"
+          loading="lazy"
+          decoding="async"
+          class="size-full object-cover"
+        />
       )
     }
   </div>

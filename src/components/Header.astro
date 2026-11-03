@@ -6,9 +6,8 @@ import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
 import IconSearch from "@/assets/icons/IconSearch.svg";
 import IconMoon from "@/assets/icons/IconMoon.svg";
 import IconX from "@/assets/icons/IconX.svg";
-import WeenasLogo from "@/assets/icons/WeenasLogo.svg";
 import LinkButton from "./LinkButton.astro";
-import { stripBase, stripLocale } from "@/utils/withBase";
+import { getAssetPath, stripBase, stripLocale } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
 import { LOCALES, LOCALE_META } from "@/i18n/locales";
 import config from "@/config";
@@ -60,9 +59,13 @@ const isActive = (path: string) => {
       href={getRelativeLocaleUrl(locale, "")}
       class="text-foreground hover:text-foreground absolute flex items-center gap-2 py-1 text-xl leading-8 font-bold tracking-tight whitespace-nowrap sm:static sm:my-auto sm:leading-none"
     >
-      <WeenasLogo
+      <img
+        src={getAssetPath("images/chuanliu-avatar.webp")}
+        alt=""
         aria-hidden="true"
-        class="dark:text-foreground h-7 w-auto shrink-0 text-[#061B3C]"
+        width="28"
+        height="28"
+        class="h-7 w-7 shrink-0 object-contain"
       />
       {site.title}
     </a>
