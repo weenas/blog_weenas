@@ -14,6 +14,7 @@ import ShareLinks from "./_components/ShareLinks.astro";
 import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
+import WalineComments from "@/components/WalineComments.astro";
 import TableOfContents from "./_components/TableOfContents.astro";
 import { tplStr, useTranslations } from "@/i18n";
 import { DEFAULT_LOCALE, LOCALE_META, toLocale } from "@/i18n/locales";
@@ -223,6 +224,7 @@ const ogImage = ogImageUrl
     <hr class="my-8 border-dashed" />
 
     <AdjacentPostNav {prevPost} {nextPost} />
+    <WalineComments />
   </main>
   <Footer />
 </PostLayout>
