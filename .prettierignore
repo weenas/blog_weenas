@@ -17,3 +17,6 @@
 *.mdx
 # Posts and pages are written in Obsidian; keep their formatting as-is.
 src/content/**/*.md
+
+# Search engine verification files must stay byte-for-byte as issued.
+public/baidu_verify_*.html

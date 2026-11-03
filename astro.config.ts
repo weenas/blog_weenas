@@ -31,7 +31,8 @@ import { DEFAULT_LOCALE, LOCALES, LOCALE_META } from "./src/i18n/locales";
 export default defineConfig({
   site: config.site.url,
   redirects: {
-    "/posts/life/claude-subscription-odyssey": "/posts/claude-subscription-odyssey",
+    "/posts/life/claude-subscription-odyssey":
+      "/posts/claude-subscription-odyssey",
   },
   integrations: [
     mdx(),
