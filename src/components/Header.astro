@@ -12,6 +12,11 @@ import { useTranslations } from "@/i18n";
 import { LOCALES, LOCALE_META } from "@/i18n/locales";
 import config from "@/config";
 
+interface Props {
+  hideAboutAndArchives?: boolean;
+}
+
+const { hideAboutAndArchives = false } = Astro.props;
 const { site, features } = config;
 
 const locale = Astro.currentLocale ?? config.site.lang;
@@ -105,16 +110,20 @@ const isActive = (path: string) => {
             {t.nav.tags}
           </a>
         </li>
-        <li class="col-span-3">
-          <a
-            href={getRelativeLocaleUrl(locale, "about")}
-            class:list={{ "active-nav": isActive("/about") }}
-          >
-            {t.nav.about}
-          </a>
-        </li>
         {
-          features.showArchives && (
+          !hideAboutAndArchives && (
+            <li class="col-span-3">
+              <a
+                href={getRelativeLocaleUrl(locale, "about")}
+                class:list={{ "active-nav": isActive("/about") }}
+              >
+                {t.nav.about}
+              </a>
+            </li>
+          )
+        }
+        {
+          !hideAboutAndArchives && features.showArchives && (
             <li class="col-span-3">
               <LinkButton
                 href={getRelativeLocaleUrl(locale, "archives")}
