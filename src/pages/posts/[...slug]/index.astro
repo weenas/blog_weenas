@@ -195,12 +195,49 @@ const ogImage = ogImageUrl
 
         <div class="my-2 flex flex-wrap items-center gap-2">
           <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
-          <span class="text-muted-foreground text-sm"
-            >阅读 <span class="waline-pageview-count">—</span></span
+          <span
+            class="text-muted-foreground inline-flex items-center gap-1 text-sm"
+            title="阅读次数"
           >
-          <span class="text-muted-foreground text-sm"
-            >评论 <span class="waline-comment-count">—</span></span
+            <svg
+              aria-hidden="true"
+              class="size-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span class="sr-only">阅读 </span><span
+              class="waline-pageview-count">—</span
+            >
+          </span>
+          <span
+            class="text-muted-foreground inline-flex items-center gap-1 text-sm"
+            title="评论数量"
           >
+            <svg
+              aria-hidden="true"
+              class="size-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l1.3-3.1A8.5 8.5 0 1 1 21 11.5Z"
+              ></path>
+            </svg>
+            <span class="sr-only">评论 </span><span class="waline-comment-count"
+              >—</span
+            >
+          </span>
           <span
             aria-hidden="true"
             class:list={[
