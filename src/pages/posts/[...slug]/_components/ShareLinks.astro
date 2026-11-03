@@ -1,21 +1,27 @@
 ---
 import LinkButton from "@/components/LinkButton.astro";
+import WeiboIcon from "@/assets/icons/socials/weibo.svg";
+import WechatIcon from "@/assets/icons/socials/wechat.svg";
+import QQIcon from "@/assets/icons/socials/qq.svg";
+import qrcode from "qrcode-generator";
 import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
 
 const { shareLinks } = config;
 const t = useTranslations(Astro.currentLocale);
-
 const icons = import.meta.glob<{
   default: (_props: Record<string, unknown>) => unknown;
 }>("/src/assets/icons/socials/*.svg");
-
-// originPathname keeps the /zh/ prefix on fallback-rendered pages.
-const pageUrl = new URL(Astro.originPathname, Astro.url);
-
+const pageUrl = new URL(Astro.originPathname, Astro.site ?? Astro.url).href;
+const encodedUrl = encodeURIComponent(pageUrl);
+const weiboUrl = `https://service.weibo.com/share/share.php?url=${encodedUrl}`;
+const qqUrl = `https://connect.qq.com/widget/shareqq/index.html?url=${encodedUrl}`;
+const qr = qrcode(0, "M");
+qr.addData(pageUrl);
+qr.make();
+const qrImage = qr.createDataURL(5, 20);
 const platformLabel = (name: string) =>
   name.charAt(0).toUpperCase() + name.slice(1);
-
 const items = await Promise.all(
   shareLinks.map(async ({ name, url, linkTitle }) => {
     const mod = await icons[`/src/assets/icons/socials/${name}.svg`]?.();
@@ -30,26 +36,184 @@ const items = await Promise.all(
 );
 ---
 
-{
-  items.some(({ Icon }) => Icon) && (
-    <div class="flex flex-none flex-col items-center justify-center gap-1 md:items-start">
-      <span class="italic">{t.post.sharePostIntro}</span>
-      <div class="text-center">
-        {items.map(({ url, title, Icon }) =>
-          Icon ? (
-            <LinkButton
-              href={`${url}${pageUrl}`}
-              class="scale-90 p-2 hover:rotate-6 sm:p-1"
-              title={title}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110" />
-              <span class="sr-only">{title}</span>
-            </LinkButton>
-          ) : null
-        )}
-      </div>
+<div
+  class="share-links flex flex-none flex-col items-center justify-center gap-1"
+  data-share-url={pageUrl}
+>
+  <span class="italic">{t.post.sharePostIntro}</span>
+  <div class="share-buttons flex flex-wrap items-center justify-center">
+    <LinkButton
+      href={weiboUrl}
+      title="分享到微博"
+      aria-label="分享到微博"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="share-button"
+      ><WeiboIcon class="brand-icon" aria-hidden="true" /></LinkButton
+    >
+    <button
+      type="button"
+      class="share-button"
+      title="分享到微信"
+      aria-label="分享到微信"
+      data-wechat><WechatIcon class="brand-icon" aria-hidden="true" /></button
+    >
+    <LinkButton
+      href={qqUrl}
+      title="分享到 QQ"
+      aria-label="分享到 QQ"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="share-button"
+      ><QQIcon class="brand-icon" aria-hidden="true" /></LinkButton
+    >
+    {
+      items.map(({ url, title, Icon }) =>
+        Icon ? (
+          <LinkButton
+            href={`${url}${encodedUrl}`}
+            class="share-button"
+            title={title}
+            aria-label={title}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon class="outline-icon" aria-hidden="true" />
+          </LinkButton>
+        ) : null
+      )
+    }
+  </div>
+  <dialog class="wechat-dialog" aria-labelledby="wechat-share-title">
+    <h2 id="wechat-share-title">分享到微信</h2>
+    <p>用微信扫描二维码打开文章，再通过微信分享。</p>
+    <img
+      src={qrImage}
+      alt="文章链接的微信扫码二维码"
+      width="160"
+      height="160"
+    />
+    <p>也可以复制链接，在微信中粘贴发送。</p>
+    <div class="dialog-actions">
+      <button type="button" data-copy-link>复制链接</button>
+      <button type="button" data-close-dialog>关闭</button>
     </div>
-  )
-}
+    <span class="share-status" aria-live="polite"></span>
+    <input
+      class="share-fallback"
+      aria-label="文章链接"
+      value={pageUrl}
+      readonly
+      hidden
+    />
+  </dialog>
+</div>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLElement>(".share-links").forEach(root => {
+      const url = root.dataset.shareUrl;
+      const open = root.querySelector<HTMLButtonElement>("[data-wechat]");
+      const dialog = root.querySelector<HTMLDialogElement>(".wechat-dialog");
+      const close = root.querySelector<HTMLButtonElement>(
+        "[data-close-dialog]"
+      );
+      const copy = root.querySelector<HTMLButtonElement>("[data-copy-link]");
+      const status = root.querySelector<HTMLElement>(".share-status");
+      const fallback = root.querySelector<HTMLInputElement>(".share-fallback");
+      if (!url || !open || !dialog || !close || !copy || !status || !fallback)
+        return;
+      open.addEventListener("click", () => dialog.showModal());
+      close.addEventListener("click", () => dialog.close());
+      copy.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(url);
+          fallback.hidden = true;
+          status.textContent = "链接已复制，可以粘贴到微信";
+        } catch {
+          fallback.hidden = false;
+          fallback.focus();
+          fallback.select();
+          status.textContent = "请复制下方链接，再粘贴到微信";
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .share-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem;
+    color: inherit;
+    cursor: pointer;
+  }
+  .share-button:hover {
+    color: var(--accent);
+  }
+  .share-button :global(svg) {
+    width: 1.65rem;
+    height: 1.65rem;
+  }
+  .share-button :global(.brand-icon) {
+    fill: currentColor;
+  }
+  .share-button :global(.outline-icon) {
+    fill: transparent;
+    stroke: currentColor;
+    stroke-width: 2;
+  }
+  .wechat-dialog {
+    max-width: min(90vw, 22rem);
+    margin: auto;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: var(--surface);
+    color: var(--foreground);
+    text-align: center;
+  }
+  .wechat-dialog::backdrop {
+    background: rgb(0 0 0 / 0.55);
+  }
+  .wechat-dialog h2 {
+    font-weight: 700;
+    font-size: 1.15rem;
+  }
+  .wechat-dialog p {
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+  }
+  .wechat-dialog img {
+    display: block;
+    margin: auto;
+    width: 160px;
+    height: 160px;
+  }
+  .dialog-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  .dialog-actions button {
+    cursor: pointer;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.8rem;
+  }
+  .dialog-actions button:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .share-status {
+    display: block;
+    color: var(--muted-foreground);
+    font-size: 0.8rem;
+  }
+  .share-fallback {
+    width: 100%;
+    color: var(--foreground);
+  }
+</style>
