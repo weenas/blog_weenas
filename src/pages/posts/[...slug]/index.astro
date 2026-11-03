@@ -193,8 +193,14 @@ const ogImage = ogImageUrl
           {title}
         </h1>
 
-        <div class="my-2 flex items-center gap-2">
+        <div class="my-2 flex flex-wrap items-center gap-2">
           <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
+          <span class="text-muted-foreground text-sm"
+            >阅读 <span class="waline-pageview-count">—</span></span
+          >
+          <span class="text-muted-foreground text-sm"
+            >评论 <span class="waline-comment-count">—</span></span
+          >
           <span
             aria-hidden="true"
             class:list={[

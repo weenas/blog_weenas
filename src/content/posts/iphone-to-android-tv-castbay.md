@@ -31,7 +31,7 @@ ogImage: https://img.weenas.com/optimized/castbay-android-tv-cover.webp
 
 <img src="https://img.weenas.com/optimized/castbay-airplay-music-2026.webp" alt="CastBay 在 Sony 电视上接收 AirPlay 音乐，播放网易云音乐歌曲《离别开出花》" width="1920" height="1080" />
 
-*CastBay 接收 iPhone 的 AirPlay 音乐投屏。画面中的歌曲为《离别开出花》，演唱者：就是南方凯，播放来源：网易云音乐。歌曲、歌词和封面归各自权利人所有；如有版权问题，请联系 [eason@weenas.com](mailto:eason@weenas.com)。*
+*CastBay 接收 iPhone 的 AirPlay 音乐投屏。画面中的歌曲为《离别开出花》，演唱者：就是南方凯，播放来源：网易云音乐。歌曲、歌词和封面归各自权利人所有。*
 
 <!--more-->
 
