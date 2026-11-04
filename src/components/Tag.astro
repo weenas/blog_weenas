@@ -1,6 +1,6 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
-import IconHash from "@/assets/icons/IconHash.svg";
+import chuanliuMark from "@/assets/icons/chuanliu-avatar-256.png";
 import config from "@/config";
 
 type Props = {
@@ -25,9 +25,11 @@ const locale = Astro.currentLocale ?? config.site.lang;
       { "px-4 py-1.5": size === "lg" },
     ]}
   >
-    <IconHash
+    <img
+      src={chuanliuMark.src}
+      alt=""
       class:list={[
-        "opacity-70",
+        "shrink-0 object-contain",
         { "size-4": size === "lg" },
         { "size-3.5": size === "sm" },
       ]}
