@@ -450,6 +450,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
     font-size: 0.7rem;
   }
   .post-image {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -459,9 +460,12 @@ const homePath = getRelativeLocaleUrl(locale, "");
     background: color-mix(in srgb, var(--home-accent) 6%, var(--home-card));
   }
   .post-image img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    object-position: center;
   }
   .all-posts {
     display: flex;

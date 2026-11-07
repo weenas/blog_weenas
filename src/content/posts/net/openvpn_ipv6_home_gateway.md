@@ -15,6 +15,7 @@ keywords:
   - DDNS
   - 群晖
   - 移动宽带
+image: /images/posts/openvpn-ipv6-home-cover.webp
 draft: false
 ---
 
